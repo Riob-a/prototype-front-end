@@ -1,0 +1,130 @@
+
+.main-logo {
+  font-family: "BBH Bartle", sans-serif;
+  font-weight: 800;
+  font-style: solid;
+}
+
+:root {
+  /* Variable names are historical (from the original brass/oxide museum
+     palette) — --brass and --oxide now hold the crimson accent tones. */
+  --wall: #0d0908;
+  --wall-soft: #171010;
+  --plaster: #f7ece7;
+  --plaster-dim: #b09a94;
+  --brass: #e8453c;
+  --brass-bright: #ff8478;
+  --oxide: #6b1616;
+  --shadow: #17100f;
+  --hairline: rgba(232, 69, 60, 0.16);
+
+  --font-display: "Fraunces", serif;
+  /* --font-family:"BBH Bartle", sans-serif; */
+  --font-body: "Work Sans", sans-serif;
+  --font-mono: "Space Mono", monospace;
+}
+
+/* Light mode — toggled by clicking the sphere (see page.tsx). Same
+   crimson accent throughout, just deepened slightly so it still holds
+   enough contrast against a light background instead of a dark one. */
+:root[data-theme="light"] {
+  --wall: #f7ece7;
+  --wall-soft: #ece0da;
+  --plaster: #1c1210;
+  --plaster-dim: #6b5650;
+  --brass: #c22b21;
+  --brass-bright: #8f1710;
+  --oxide: #6b1616;
+  --shadow: #efe2dc;
+  --hairline: rgba(194, 43, 33, 0.18);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brass);
+  border-radius: 2px;
+  scrollbar-width: thick;
+  /* scrollbar-color: var(--brass) transparent; */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--wall);
+  color: var(--plaster);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--brass);
+  color: var(--wall);
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass-bright);
+  outline-offset: 3px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.section {
+  position: relative;
+  background: var(--wall);
+  padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.section-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: clamp(0px, 4vw, 7.5rem);
+}
+
+@media (max-width: 720px) {
+  .section-inner {
+    padding-left: 0;
+  }
+}
