@@ -109,6 +109,13 @@ img {
   text-transform: uppercase;
   color: var(--brass);
 }
+.eyebrow-p {
+  font-family: var(--font-mono);
+  /* font-size: 0.72rem; */
+  /* letter-spacing: 0.18em; */
+  /* text-transform: uppercase; */
+  /* color: var(--brass); */
+}
 
 .section {
   position: relative;

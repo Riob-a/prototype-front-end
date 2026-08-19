@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, ContactShadows, Text3D, Center, Edges, } from "@react-three/drei";
+import { Environment, ContactShadows, Text3D, Center, Edges, useProgress } from "@react-three/drei";
 import { useSpring, a } from "@react-spring/three";
 import * as THREE from "three";
 
@@ -209,38 +209,98 @@ function OrbitLabel({
 //     </Suspense>
 //   );
 // }
+function SculptureLoader({
+  onProgress,
+  onReady,
+}: {
+  onProgress: (progress: number) => void;
+  onReady: () => void;
+}) {
+  const { progress, active } = useProgress();
+  const [minimumTimePassed, setMinimumTimePassed] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  // Minimum loading-screen display time
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setMinimumTimePassed(true);
+    }, 1500);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // Send actual Three.js loading progress to page.tsx
+  useEffect(() => {
+    onProgress(progress);
+  }, [progress, onProgress]);
+
+  // Decide when the sphere is genuinely ready
+  useEffect(() => {
+    if (
+      !active &&
+      progress >= 100 &&
+      minimumTimePassed &&
+      !ready
+    ) {
+      setReady(true);
+
+      // Give Three.js a couple of frames to render
+      // the completed sphere before removing the loader.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          onReady();
+        });
+      });
+    }
+  }, [
+    active,
+    progress,
+    minimumTimePassed,
+    ready,
+    onReady,
+  ]);
+
+  return null;
+}
 
 export default function Sculpture({
   onNavigate = () => { },
   onToggleTheme,
   theme,
   onReady,
+  onProgress,
 }: {
   onNavigate?: (id: string) => void;
   onToggleTheme?: () => void;
   theme: "dark" | "light";
   onReady?: () => void;
+  onProgress?: (progress: number) => void;
 }) {
+
   return (
     <div style={{ width: "100%", height: "100%", cursor: "pointer" }}>
       <Canvas
         camera={{ position: [0, 0.4, 5.6], fov: 40 }}
         dpr={[1, 2]}
         gl={{ antialias: true }}
-        onCreated={() => onReady?.()}
       >
-        <ambientLight intensity={0.35} />
-        <MetallicSphere onToggleTheme={onToggleTheme} theme={theme} />
-        {/* <OrbitingLabels onNavigate={onNavigate} /> */}
-        {/* <ContactShadows
-          position={[0, -1.4, 0]}
-          opacity={0.55}
-          scale={8}
-          blur={2.4}
-          far={2}
-          color="#000000"
-        /> */}
-        <Environment preset="city" />
+        <SculptureLoader
+          onProgress={(progress) => onProgress?.(progress)}
+          onReady={() => onReady?.()}
+        />
+
+        <Suspense fallback={null}>
+          <ambientLight intensity={0.35} />
+
+          <MetallicSphere
+            onToggleTheme={onToggleTheme}
+            theme={theme}
+          />
+
+          <Environment
+            files="/hdri/potsdamer_platz_1k.hdr"
+          />
+        </Suspense>
       </Canvas>
     </div>
   );

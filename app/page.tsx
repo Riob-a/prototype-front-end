@@ -72,14 +72,8 @@ export default function Home() {
   // flash if the real saved theme were "light".
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [mounted, setMounted] = useState(false);
-
-  // useEffect(() => {
-  //   const frame = requestAnimationFrame(() => {
-  //     setMounted(true);
-  //   });
-
-  //   return () => cancelAnimationFrame(frame);
-  // }, []);
+  const [loaderExiting, setLoaderExiting] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     const current = document.documentElement.getAttribute("data-theme");
@@ -98,23 +92,43 @@ export default function Home() {
   };
 
   useEffect(() => {
+    if (!mounted) return;
+
     AOS.init({
-      duration: 700,
+      duration: 600,
       easing: "ease-out-cubic",
       once: true,
       offset: 60,
       disable: () =>
         window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     });
-  }, []);
+
+    AOS.refreshHard();
+  }, [mounted]);
 
   return (
     <>
       {!mounted && (
-        <div className="initial-loader">
+        <div
+          className={`initial-loader ${loaderExiting ? "loader-exiting" : ""
+            }`}
+        >
           <div className="initial-loader-content">
             <span>THE</span>
             <strong>GALLERY</strong>
+
+            <div className="loader-progress">
+              <div
+                className="loader-progress-bar"
+                style={{
+                  width: `${loadingProgress}%`,
+                }}
+              />
+            </div>
+
+            <div className="loader-percentage">
+              {Math.round(loadingProgress)}%
+            </div>
           </div>
         </div>
       )}
@@ -129,11 +143,11 @@ export default function Home() {
                 <span className="eyebrow" data-aos="fade-up">
                   Derrick Ongwae
                 </span>
-                <h1 data-aos="fade-up" data-aos-delay="100">
+                <h1 data-aos="fade-right" data-aos-delay="150">
                   <span className="title-the">THE</span>
                   <em>center</em>
                 </h1>
-                <p data-aos="fade-up" data-aos-delay="200">
+                <p className="eyebrow-" data-aos="fade-right" data-aos-delay="300">
                   One room, four wings. Pencil, paint, digital, and still life —
                   worked on in whichever order the subject demands. Turn the
                   piece at the centre; it turns back.
@@ -142,13 +156,22 @@ export default function Home() {
               <div className="entrance-sculpture">
                 <Sculpture
                   onNavigate={(id) =>
-                    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+                    document
+                      .getElementById(id)
+                      ?.scrollIntoView({ behavior: "smooth" })
                   }
                   onToggleTheme={toggleTheme}
                   theme={theme}
-                  onReady={() => setMounted(true)}
+                  onProgress={setLoadingProgress}
+                  onReady={() => {
+                    setLoaderExiting(true);
+
+                    window.setTimeout(() => {
+                      setMounted(true);
+                    }, 700);
+                  }}
                 />
-                <span className="plinth-label">
+                <span className="plinth-label" data-aos="fade-up" data-aos-delay="320">
                   Fig. 0 — Untitled (Kinetic Study), metal, ongoing
                 </span>
               </div>
@@ -275,8 +298,50 @@ export default function Home() {
           display: flex;
           align-items: center;
           justify-content: center;
+
+          transform: translateY(0);
+          opacity: 1;
+
+          transition:
+            transform 700ms cubic-bezier(0.76, 0, 0.24, 1),
+            opacity 700ms ease;
+
+          pointer-events: auto;
+        }
+        .loader-progress {
+          width: clamp(180px, 25vw, 320px);
+          height: 1px;
+          margin-top: 2rem;
+
+          background: var(--hairline);
+          overflow: hidden;
         }
 
+        .loader-progress-bar {
+          height: 100%;
+          width: 0%;
+
+          background: var(--brass);
+
+          transition: width 180ms ease-out;
+        }
+
+        .loader-percentage {
+          margin-top: 0.65rem;
+
+          font-family: var(--font-mono);
+          font-size: 0.68rem;
+          letter-spacing: 0.08em;
+
+          color: var(--plaster-dim);
+
+          align-self: flex-end;
+        }
+        .initial-loader.loader-exiting {
+          transform: translateY(-100%);
+          opacity: 0;
+          pointer-events: none;
+        }
         .initial-loader-content {
           display: flex;
           flex-direction: column;
@@ -510,6 +575,8 @@ export default function Home() {
           font-style: italic;
           font-size: clamp(2rem, 4vw, 2.8rem);
           margin: 0.6rem 0 2.2rem;
+        }
+        .p{
         }
         .works-grid {
           display: grid;
