@@ -34,14 +34,49 @@ function MetallicSphere({
 
   const { scale } = useSpring({
     scale: hovered ? 1.08 : 1,
-    config: { mass: 1.4, tension: 210, friction: 18 },
+    config: {
+      mass: 1.4,
+      tension: 210,
+      friction: 18,
+    },
   });
+  const clickRotation = useRef(0);
+  const clickVelocity = useRef(0);
 
   useFrame((_, delta) => {
     if (!meshRef.current) return;
-    meshRef.current.rotation.y += delta * (hovered ? 0.55 : 0.18);
+
+    // Normal rotation
+    meshRef.current.rotation.y +=
+      delta * (hovered ? 0.55 : 0.18);
+
     meshRef.current.rotation.x += delta * 0.04;
+
+    // Click rotation impulse
+    if (clickVelocity.current > 0) {
+      meshRef.current.rotation.y +=
+        delta * clickVelocity.current;
+
+      clickVelocity.current *= Math.pow(0.08, delta);
+
+      if (clickVelocity.current < 0.01) {
+        clickVelocity.current = 0;
+      }
+    }
+
+    clickRotation.current = meshRef.current.rotation.y;
   });
+
+  const handleClick = (e: any) => {
+    e.stopPropagation();
+
+    setActive((v) => !v);
+
+    // Give the sphere a strong rotational impulse
+    clickVelocity.current = 7;
+
+    onToggleTheme?.();
+  };
 
   return (
     <a.group
@@ -59,11 +94,7 @@ function MetallicSphere({
           setHovered(false);
           document.body.style.cursor = "auto";
         }}
-        onClick={(e) => {
-          e.stopPropagation();
-          setActive((v) => !v);
-          onToggleTheme?.();
-        }}
+        onClick={handleClick}
       >
         <icosahedronGeometry args={[1.35, 8]} />
         <meshPhysicalMaterial
