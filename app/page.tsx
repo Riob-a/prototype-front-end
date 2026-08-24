@@ -172,7 +172,7 @@ export default function Home() {
                   }}
                 />
                 <span className="plinth-label" data-aos="fade-up" data-aos-delay="320">
-                  Fig. 0 — Untitled (Kinetic Study), metal, ongoing
+                  Fig. 0 — Untitled (Kinetic Study), glass, ongoing
                 </span>
               </div>
             </div>
