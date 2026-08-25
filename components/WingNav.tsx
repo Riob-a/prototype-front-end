@@ -49,7 +49,7 @@ export default function WingNav() {
           );
         }
         .wing-nav-mark {
-          // font-family: var(--font-mono);
+          /* font-family: var(--font-mono); */
           font-family: "BBH Bartle", sans-serif;
           font-size: 0.62rem;
           letter-spacing: 0.3em;

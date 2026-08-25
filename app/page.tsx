@@ -65,22 +65,27 @@ const ROOMS = [
 ];
 
 export default function Home() {
-  // The inline script in layout.tsx runs before paint and already sets
-  // data-theme on <html> based on the saved choice (or system
-  // preference). This just syncs React's state to match it — it never
-  // writes a default back to the DOM, which is what would cause a
-  // flash if the real saved theme were "light".
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const [mounted, setMounted] = useState(false);
-  const [loaderExiting, setLoaderExiting] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    if (typeof document !== "undefined") {
+      const current = document.documentElement.getAttribute("data-theme");
 
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme");
-    if (current === "light" || current === "dark") {
-      setTheme(current);
+      if (current === "light" || current === "dark") {
+        return current;
+      }
     }
-  }, []);
+
+    return "dark";
+  });
+  const [mounted, setMounted] = useState(false);
+  // const [loaderExiting, setLoaderExiting] = useState(false);
+  // const [loadingProgress, setLoadingProgress] = useState(0);
+
+  // useEffect(() => {
+  //   const current = document.documentElement.getAttribute("data-theme");
+  //   if (current === "light" || current === "dark") {
+  //     setTheme(current);
+  //   }
+  // }, []);
 
   const toggleTheme = () => {
     setTheme((prev) => {
@@ -89,6 +94,35 @@ export default function Home() {
       window.localStorage.setItem("theme", next);
       return next;
     });
+  };
+
+  const updateLoadingProgress = (progress: number) => {
+    const bar = document.getElementById("loader-progress-bar");
+    const percentage = document.getElementById("loader-percentage");
+
+    if (bar) {
+      bar.style.width = `${progress}%`;
+    }
+
+    if (percentage) {
+      percentage.textContent = `${Math.round(progress)}%`;
+    }
+  };
+
+  const finishLoading = () => {
+    const loader = document.getElementById("initial-loader");
+
+    if (!loader) {
+      setMounted(true);
+      return;
+    }
+
+    loader.classList.add("loader-exiting");
+
+    window.setTimeout(() => {
+      loader.remove();
+      setMounted(true);
+    }, 700);
   };
 
   useEffect(() => {
@@ -108,7 +142,7 @@ export default function Home() {
 
   return (
     <>
-      {!mounted && (
+      {/* {!mounted && (
         <div
           className={`initial-loader ${loaderExiting ? "loader-exiting" : ""
             }`}
@@ -131,7 +165,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       <div className={mounted ? "site-mounted" : "site-hidden"}>
         <WingNav />
@@ -162,14 +196,16 @@ export default function Home() {
                   }
                   onToggleTheme={toggleTheme}
                   theme={theme}
-                  onProgress={setLoadingProgress}
-                  onReady={() => {
-                    setLoaderExiting(true);
+                  // onProgress={setLoadingProgress}
+                  // onReady={() => {
+                  //   setLoaderExiting(true);
 
-                    window.setTimeout(() => {
-                      setMounted(true);
-                    }, 700);
-                  }}
+                  //   window.setTimeout(() => {
+                  //     setMounted(true);
+                  //   }, 700);
+                  // }}
+                  onProgress={updateLoadingProgress}
+                  onReady={finishLoading}
                 />
                 <span className="plinth-label" data-aos="fade-up" data-aos-delay="320">
                   Fig. 0 — Untitled (Kinetic Study), glass, ongoing
@@ -288,80 +324,6 @@ export default function Home() {
         }
 
         /* ---------- Entrance ---------- */
-        .initial-loader {
-          position: fixed;
-          inset: 0;
-          z-index: 99999;
-          background: var(--wall);
-          color: var(--plaster);
-
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          transform: translateY(0);
-          opacity: 1;
-
-          transition:
-            transform 700ms cubic-bezier(0.76, 0, 0.24, 1),
-            opacity 700ms ease;
-
-          pointer-events: auto;
-        }
-        .loader-progress {
-          width: clamp(180px, 25vw, 320px);
-          height: 1px;
-          margin-top: 2rem;
-
-          background: var(--hairline);
-          overflow: hidden;
-        }
-
-        .loader-progress-bar {
-          height: 100%;
-          width: 0%;
-
-          background: var(--brass);
-
-          transition: width 180ms ease-out;
-        }
-
-        .loader-percentage {
-          margin-top: 0.65rem;
-
-          font-family: var(--font-mono);
-          font-size: 0.68rem;
-          letter-spacing: 0.08em;
-
-          color: var(--plaster-dim);
-
-          align-self: flex-end;
-        }
-        .initial-loader.loader-exiting {
-          transform: translateY(-100%);
-          opacity: 0;
-          pointer-events: none;
-        }
-        .initial-loader-content {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          font-family: "BBH Bartle", sans-serif;
-          line-height: 0.85;
-        }
-
-        .initial-loader-content span {
-          background: var(--brass);
-          color: var(--wall);
-          padding: 0.12em 0.3em 0.18em;
-        }
-
-        .initial-loader-content strong {
-          font-size: clamp(3rem, 10vw, 7rem);
-          font-style: italic;
-          color: var(--brass-bright);
-        }
-
         .site-hidden {
           visibility: hidden;
         }
@@ -392,9 +354,9 @@ export default function Home() {
           max-width: 32rem;
         }
         .entrance-copy h1 {
-          // font-family: var(--font-display);
+          /*font-family: var(--font-display); */
           font-family: "BBH Bartle", sans-serif;
-          // font-family: var(--font-unbounded);
+          /* font-family: var(--font-unbounded); */
           font-weight: 800;
           font-size: clamp(2.6rem, 7vw, 4.6rem);
           line-height: 1.02;
@@ -569,7 +531,7 @@ export default function Home() {
         }
 
         h2 {
-          // font-family: var(--font-display);
+          /* font-family: var(--font-display); */
           font-family: "BBH Bartle", sans-serif;
           font-weight: 400;
           font-style: italic;
@@ -600,7 +562,7 @@ export default function Home() {
         }
         .room h3 {
           font-family: var(--font-unbounded);
-          // font-style: italic;
+          /* font-style: italic; */
           font-size: 1.5rem;
           margin: 0.5rem 0 0.7rem;
         }

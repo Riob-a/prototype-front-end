@@ -7,8 +7,6 @@ import { useSpring, a } from "@react-spring/three";
 import * as THREE from "three";
 
 // Served locally from /public/fonts. Currently set to Panchang Bold — the
-// other two options (unbounded-black.json, helvetiker-regular.json) are
-// sitting in that same folder if you want to switch.
 const FONT_URL = "/fonts/panchang-bold.json";
 
 const LABELS = [
@@ -119,7 +117,7 @@ function MetallicSphere({
           depthWrite={false}
         />
         <Edges
-          threshold={1}
+          threshold={4}
           color={theme === "dark" ? "#000000" : "#edebeb"}
           lineWidth={1}
         />
@@ -194,7 +192,6 @@ function OrbitLabel({
     </a.group>
   );
 }
-
 // Owns the one shared clock all labels orbit on, and the imperative
 // per-frame position update for all of them. Pausing is a single global
 // flag (any label hovered), so spacing between labels never drifts.
