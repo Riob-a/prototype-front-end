@@ -142,31 +142,6 @@ export default function Home() {
 
   return (
     <>
-      {/* {!mounted && (
-        <div
-          className={`initial-loader ${loaderExiting ? "loader-exiting" : ""
-            }`}
-        >
-          <div className="initial-loader-content">
-            <span>THE</span>
-            <strong>GALLERY</strong>
-
-            <div className="loader-progress">
-              <div
-                className="loader-progress-bar"
-                style={{
-                  width: `${loadingProgress}%`,
-                }}
-              />
-            </div>
-
-            <div className="loader-percentage">
-              {Math.round(loadingProgress)}%
-            </div>
-          </div>
-        </div>
-      )} */}
-
       <div className={mounted ? "site-mounted" : "site-hidden"}>
         <WingNav />
         <main className="gallery">
@@ -196,14 +171,6 @@ export default function Home() {
                   }
                   onToggleTheme={toggleTheme}
                   theme={theme}
-                  // onProgress={setLoadingProgress}
-                  // onReady={() => {
-                  //   setLoaderExiting(true);
-
-                  //   window.setTimeout(() => {
-                  //     setMounted(true);
-                  //   }, 700);
-                  // }}
                   onProgress={updateLoadingProgress}
                   onReady={finishLoading}
                 />

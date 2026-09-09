@@ -35,6 +35,7 @@ export default function WingNav() {
           left: 0;
           top: 0;
           bottom: 0;
+          /* width: clamp(3.2rem, 4vw, 7.5rem); */
           width: clamp(3.2rem, 4vw, 7.5rem);
           border-right: 1px solid var(--hairline);
           display: flex;
@@ -65,9 +66,13 @@ export default function WingNav() {
           gap: 2.4rem;
           flex: 1;
           min-height: 0;
-          justify-content: center;
+          justify-content: flex-start;
           overflow-y: auto;
-          padding: 0.5rem 0.5rem;
+          overflow-x: hidden;
+
+          /* padding: 0.5rem 0.5rem 1.5rem; */
+          padding: 1rem 0.75rem;
+
           scrollbar-width: thin;
           scrollbar-color: var(--brass) transparent;
         }
