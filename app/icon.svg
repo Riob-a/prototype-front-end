@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2048 2048">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="310 300 1400 1300">
+<!--stable viewBox="300 300 1500 1500" -->
   <title>DRO Triangular Logo — Editable Color</title>
   <style>
     :root { --logo-color: #e8453c; }
