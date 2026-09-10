@@ -31,7 +31,7 @@ const unbounded = Unbounded({
 });
 
 export const metadata: Metadata = {
-  title: "the GALLERY — Derrick Ongwae",
+  title: "CENTER — Derrick Ongwae",
   description:
     "A single room, four wings. Pencil, paint, digital, and still life work by Derrick Ongwae.",
 };

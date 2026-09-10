@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import AOS from "aos";
 import WingNav from "@/components/WingNav";
 import Placard from "@/components/Placard";
+import DROLogo from "@/components/Logo";
 
 const Sculpture = dynamic(() => import("@/components/Sculpture"), {
   ssr: false,
@@ -149,9 +150,10 @@ export default function Home() {
           <section id="entrance" className="entrance-wrapper">
             <div className="entrance-pin">
               <div className="entrance-copy">
-                <span className="eyebrow" data-aos="fade-up">
-                  Derrick Ongwae
-                </span>
+                <div className="name-logo" data-aos="fade-up">
+                  <DROLogo className="name-logo-icon" size={42} />
+                  <span className="eyebrow">Derrick Ongwae</span>
+                </div>
                 <h1 data-aos="fade-right" data-aos-delay="150">
                   <span className="title-the">THE</span>
                   <em>center</em>
@@ -298,7 +300,20 @@ export default function Home() {
         .site-mounted {
            visibility: visible;
         }
+        .name-logo {
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+          color: var(--brass);
+          transition: color 0.5s ease;
+        }
 
+        .name-logo-icon {
+          width: 42px;
+          height: 42px;
+          flex-shrink: 0;
+          color: var(--brass);
+        }
         .entrance-wrapper {
           position: relative;
           min-height: 220vh;

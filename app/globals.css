@@ -130,6 +130,19 @@ img {
   padding-left: clamp(0px, 4vw, 7.5rem);
 }
 
+.logo {
+  color: var(--logo-color);
+  transition: color 0.4s ease;
+}
+
+[data-theme="dark"] {
+  --logo-color: #e8453c;
+}
+
+[data-theme="light"] {
+  --logo-color: #c22b21;
+}
+
 @media (max-width: 720px) {
   .section-inner {
     padding-left: 0;
