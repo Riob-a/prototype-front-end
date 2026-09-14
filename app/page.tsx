@@ -6,6 +6,7 @@ import AOS from "aos";
 import WingNav from "@/components/WingNav";
 import Placard from "@/components/Placard";
 import DROLogo from "@/components/Logo";
+import Link from "next/link";
 
 const Sculpture = dynamic(() => import("@/components/Sculpture"), {
   ssr: false,
@@ -18,6 +19,7 @@ const WORKS = [
     medium: "Graphite on paper",
     year: "2024",
     note: "A study of shadow falling across an unfinished table setting.",
+    link: "https://derrick-55-ongwae.vercel.app/",
   },
   {
     catalogue: "CAT. 02",
@@ -25,6 +27,8 @@ const WORKS = [
     medium: "Oil on canvas",
     year: "2024",
     note: "Warm underpainting left visible at the edges of the frame.",
+    link: "https://derrick-55-ongwae.vercel.app/",
+
   },
   {
     catalogue: "CAT. 03",
@@ -32,6 +36,8 @@ const WORKS = [
     medium: "Digital",
     year: "2025",
     note: "Built from layered brush passes rather than flat vector shapes.",
+    link: "https://derrick-55-ongwae.vercel.app/",
+
   },
   {
     catalogue: "CAT. 04",
@@ -39,6 +45,8 @@ const WORKS = [
     medium: "Charcoal and pencil",
     year: "2023",
     note: "Returned to twice, a year apart, to correct the light.",
+    link: "https://derrick-55-ongwae.vercel.app/",
+
   },
 ];
 
@@ -196,13 +204,15 @@ export default function Home() {
                 </h2>
                 <div className="works-grid">
                   {WORKS.map((w, i) => (
-                    <div
+                    <Link
+                      className="work-card-link"
+                      href={w.link}
                       key={w.catalogue}
                       data-aos="fade-up"
                       data-aos-delay={150 + i * 100}
                     >
                       <Placard {...w} />
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -409,25 +419,25 @@ export default function Home() {
           width: 100%;
         }
         .wing-i-overlap {
-          margin-top: -60vh;
+          margin-top: -10vh;
           background: transparent;
           position: relative;
           z-index: 1;
         }
         .wing-ii-overlap {
-          margin-top: -50vh;
+          margin-top: -10vh;
           background: transparent;
           position: relative;
           z-index: 2;
         }
         .wing-iii-overlap {
-          margin-top: -60vh;
+          margin-top: -10vh;
           background: transparent;
           position: relative;
           z-index: 3;
         }
         .wing-iv-overlap {
-          margin-top: -60vh;
+          margin-top: -10vh;
           background: transparent;
           position: relative;
           z-index: 4;

@@ -5,6 +5,16 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, ContactShadows, Text3D, Center, Edges, useProgress } from "@react-three/drei";
 import { useSpring, a } from "@react-spring/three";
 import * as THREE from "three";
+import { detectDeviceTier } from "./deviceTier";
+
+// Per-tier render settings for the sphere. Low-end devices skip the
+// expensive glass/transmission material and the HDRI environment map,
+// and get a lower-poly mesh + capped DPR + no AA.
+const TIER_SETTINGS = {
+  low: { detail: 3, dpr: [1, 1], antialias: false, transmission: false, env: false },
+  mid: { detail: 6, dpr: [1, 1.5], antialias: true, transmission: true, env: true },
+  high: { detail: 8, dpr: [1, 2], antialias: true, transmission: true, env: true },
+};
 
 // Served locally from /public/fonts. Currently set to Panchang Bold — the
 const FONT_URL = "/fonts/panchang-bold.json";
@@ -22,10 +32,13 @@ const ORBIT_SPEED = 0.25;
 function MetallicSphere({
   onToggleTheme,
   theme,
+  tier,
 }: {
   onToggleTheme?: () => void;
   theme: "dark" | "light";
+  tier: keyof typeof TIER_SETTINGS;
 }) {
+  const { detail, transmission } = TIER_SETTINGS[tier];
   const meshRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const [active, setActive] = useState(false);
@@ -94,23 +107,38 @@ function MetallicSphere({
         }}
         onClick={handleClick}
       >
-        <icosahedronGeometry args={[1.35, 8]} />
-        <meshPhysicalMaterial
-          depthWrite={false}
-          color={theme === "dark" ? "#ffffff" : "#050505"}
-          metalness={1}
-          roughness={0.15}
-          envMapIntensity={1.4}
-          transparent
-          ior={1.5}
-          transmission={1}
-          opacity={0.3}
-          thickness={0.5}
-        />
+        <icosahedronGeometry args={[1.35, detail]} />
+        {transmission ? (
+          <meshPhysicalMaterial
+            depthWrite={false}
+            color={theme === "dark" ? "#ffffff" : "#050505"}
+            metalness={1}
+            roughness={0.15}
+            envMapIntensity={1.4}
+            transparent
+            ior={1.5}
+            transmission={1}
+            opacity={0.3}
+            thickness={0.5}
+          />
+        ) : (
+          // Cheaper stand-in for low-tier devices: transmission/ior force a
+          // per-pixel refraction pass that's costly on weak GPUs, so fall
+          // back to a plain metallic material at similar opacity instead.
+          <meshStandardMaterial
+            depthWrite={false}
+            color={theme === "dark" ? "#ffffff" : "#050505"}
+            metalness={1}
+            roughness={0.2}
+            transparent
+            opacity={0.5}
+          />
+        )}
       </mesh>
 
       <mesh renderOrder={10}>
-        <icosahedronGeometry args={[1.36, 8]} />
+        {/* <icosahedronGeometry args={[1.36, detail]} /> */}
+        <icosahedronGeometry args={[1.36, detail]} />
         <meshBasicMaterial
           transparent
           opacity={0}
@@ -304,13 +332,22 @@ export default function Sculpture({
   onReady?: () => void;
   onProgress?: (progress: number) => void;
 }) {
+  // "mid" until the real measurement lands client-side (detectDeviceTier
+  // touches window/canvas/navigator, so it can't run during SSR).
+  const [tier, setTier] = useState<keyof typeof TIER_SETTINGS>("mid");
+
+  useEffect(() => {
+    setTier(detectDeviceTier());
+  }, []);
+
+  const { dpr, antialias, env } = TIER_SETTINGS[tier];
 
   return (
     <div style={{ width: "100%", height: "100%", cursor: "pointer" }}>
       <Canvas
         camera={{ position: [0, 0.4, 5.6], fov: 40 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true }}
+        dpr={dpr as [number, number]}
+        gl={{ antialias }}
       >
         <SculptureLoader
           onProgress={(progress) => onProgress?.(progress)}
@@ -323,11 +360,14 @@ export default function Sculpture({
           <MetallicSphere
             onToggleTheme={onToggleTheme}
             theme={theme}
+            tier={tier}
           />
 
-          <Environment
-            files="/hdri/potsdamer_platz_1k.hdr"
-          />
+          {env && (
+            <Environment
+              files="/hdri/potsdamer_platz_1k.hdr"
+            />
+          )}
         </Suspense>
       </Canvas>
     </div>
