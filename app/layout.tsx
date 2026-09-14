@@ -84,7 +84,7 @@ export default function RootLayout({
         <div id="initial-loader" className="initial-loader">
           <div className="initial-loader-content">
             <span>THE</span>
-            <strong>GALLERY</strong>
+            <strong>CENTER</strong>
 
             <div className="loader-progress">
               <div
