@@ -151,7 +151,7 @@ export default function Home() {
             <div className="entrance-pin">
               <div className="entrance-copy">
                 <div className="name-logo" data-aos="fade-up">
-                  <DROLogo className="name-logo-icon" size={42} />
+                  <DROLogo className="name-logo-icon" color="var(--logo-color)" size={42} />
                   <span className="eyebrow">Derrick Ongwae</span>
                 </div>
                 <h1 data-aos="fade-right" data-aos-delay="150">
