@@ -1736,12 +1736,10 @@ function AnimatedLathe() {
    ========================================================= */
 
 export default function Experimental() {
-
   return (
     <div className="experimental-stage">
-
       <Canvas
-        dpr={[1, 1.5]}
+        dpr={1}
         gl={{
           antialias: false,
           powerPreference: "high-performance",
@@ -1751,7 +1749,6 @@ export default function Experimental() {
           fov: 38,
         }}
       >
-
         <color
           attach="background"
           args={["#191919"]}
@@ -1761,16 +1758,15 @@ export default function Experimental() {
 
         <OrbitControls
           target={[0, 4, 0]}
-          enablePan
-          enableZoom:false
-          enableRotate
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
           minDistance={5}
           maxDistance={22}
           minPolarAngle={0.25}
           maxPolarAngle={Math.PI - 0.25}
         />
       </Canvas>
-
     </div>
   );
 
