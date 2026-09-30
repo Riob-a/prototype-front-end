@@ -28,8 +28,8 @@ function AnimatedLathe() {
   const morph = useRef(0);
   const morphTarget = useRef(0);
 
-  const SEGMENTS = 128;
-  const PROFILE_POINTS = 220;
+  const SEGMENTS = 95;
+  const PROFILE_POINTS = 150;
 
   const HEIGHT = 8;
 
@@ -1741,6 +1741,11 @@ export default function Experimental() {
     <div className="experimental-stage">
 
       <Canvas
+        dpr={[1, 1.5]}
+        gl={{
+          antialias: false,
+          powerPreference: "high-performance",
+        }}
         camera={{
           position: [0, 4, 13],
           fov: 38,
@@ -1757,7 +1762,7 @@ export default function Experimental() {
         <OrbitControls
           target={[0, 4, 0]}
           enablePan
-          enableZoom
+          enableZoom:false
           enableRotate
           minDistance={5}
           maxDistance={22}
