@@ -108,6 +108,7 @@ function MetallicSphere({
         onClick={handleClick}
       >
         <icosahedronGeometry args={[1.35, detail]} />
+        {/* <icosahedronGeometry args={[1.8,0]} /> */}
         {transmission ? (
           <meshPhysicalMaterial
             depthWrite={false}

@@ -7,6 +7,7 @@ const WINGS = [
   { id: "wing-ii", label: "Wing II — Media" },
   { id: "wing-iii", label: "Wing III — Artist" },
   { id: "wing-iv", label: "Wing IV — Visit" },
+  { id: "wing-v", label: "Wing V — Experimental" },
 ];
 
 export default function WingNav() {

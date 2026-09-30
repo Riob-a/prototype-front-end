@@ -6,6 +6,7 @@ import AOS from "aos";
 import WingNav from "@/components/WingNav";
 import Placard from "@/components/Placard";
 import DROLogo from "@/components/Logo";
+import AnimatedLathe from "@/components/Experimental"
 import Link from "next/link";
 
 const Sculpture = dynamic(() => import("@/components/Sculpture"), {
@@ -295,8 +296,22 @@ export default function Home() {
               </div>
             </div>
           </section>
-        </main>
 
+          <section id="wing-v" className="wing-runway wing-v-overlap">
+            <div className="wing-pin">
+              <div className="section-inner">
+                <span className="eyebrow" data-aos="fade-up">
+                  Wing V
+                </span>
+                <h2 data-aos="fade-up" data-aos-delay="100">
+                 xperiment
+                </h2>
+                <AnimatedLathe/>
+              </div>
+            </div>
+          </section>
+        </main>
+    
         <style jsx>{`
         .gallery {
           margin-left: clamp(3.2rem, 4vw, 7.5rem);
@@ -442,6 +457,39 @@ export default function Home() {
           position: relative;
           z-index: 4;
         }
+        .wing-v-overlap {
+          margin-top: -10vh;
+          background: transparent;
+          position: relative;
+          z-index: 5;
+        }
+          
+        #wing-v .wing-pin {
+          padding-top: 3rem;
+          padding-bottom: 3rem;
+        }
+
+        #wing-v .section-inner {
+          width: 100%;
+          max-width: none;
+        }
+        :global(.experimental-stage) {
+          width: 100%;
+          height: 75vh;
+          min-height: 10px;
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        :global(.experimental-stage canvas) {
+          display: block;
+          width: 80% !important;
+          height: 80% !important;
+          margin: auto;
+        }
 
         /* ---------- Per-wing scroll-driven reveal ----------
            Native CSS scroll-linked animation (no JS): each wing's content
@@ -583,21 +631,71 @@ export default function Home() {
           color: var(--plaster);
           border-color: var(--plaster);
         }
-        @media (max-width: 720px) {
-          .gallery {
-            margin-left: 0;
-          }
-          /* Overlap math assumes real scroll runway per section; on short
-             mobile viewports the pulls can get tight. Ease them off. */
-          .wing-i-overlap {
-            margin-top: -40vh;
-          }
-          .wing-ii-overlap,
-          .wing-iii-overlap,
-          .wing-iv-overlap {
-            margin-top: -30vh;
-          }
+
+       @media (max-width: 720px) {
+        .gallery {
+          margin-left: 0;
         }
+
+        #wing-i {
+          margin-top: 0;
+          position: relative;
+          z-index: 1;
+        }
+
+        #wing-i .wing-pin {
+          position: sticky;
+          top: 0;
+          height: 100svh;
+          min-height: 0;
+
+          overflow-y: auto;
+          overflow-x: hidden;
+
+          box-sizing: border-box;
+
+          padding: 35rem 1.5rem 6rem;
+
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: thin;
+        }
+
+        #wing-i .section-inner {
+          width: 100%;
+          min-height: max-content;
+        }
+
+        #wing-i .works-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        #wing-i .wing-pin::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        #wing-i .wing-pin::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        #wing-i .wing-pin::-webkit-scrollbar-thumb {
+          background: var(--brass);
+          border-radius: 999px;
+        }
+
+        /*
+        * On mobile, don't allow the next wing
+        * to cover the Wing I scroll area.
+        */
+        .wing-ii-overlap {
+          margin-top: 0;
+        }
+
+        .wing-iii-overlap,
+        .wing-iv-overlap {
+          margin-top: -10vh;
+        }
+      }
       `}</style>
       </div>
     </>
