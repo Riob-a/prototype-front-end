@@ -306,7 +306,7 @@ export default function Home() {
                 <h2 data-aos="fade-up" data-aos-delay="100">
                  xperiment
                 </h2>
-                <AnimatedLathe/>
+                {/* <AnimatedLathe/> */}
               </div>
             </div>
           </section>
