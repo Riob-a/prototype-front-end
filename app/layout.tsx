@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans, Space_Mono, Unbounded } from "next/font/google";
+import DROGlobeLogo from "@/components/DROGlobeLogo";
 import "aos/dist/aos.css";
 import "./globals.css";
 
@@ -83,9 +84,13 @@ export default function RootLayout({
             incorrect first-frame flash on Ctrl+R. */}
         <div id="initial-loader" className="initial-loader">
           <div className="initial-loader-content">
-            <span>THE</span>
-            <strong>CENTER</strong>
-
+            {/* <span>THE</span>
+            <strong>CENTER</strong> */}
+            <DROGlobeLogo
+              className="logo logo-globe"
+              globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
+              size={350}
+            />
             <div className="loader-progress">
               <div
                 id="loader-progress-bar"

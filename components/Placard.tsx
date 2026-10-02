@@ -21,7 +21,8 @@ export default function Placard({
           hover-out. Sits behind the content via z-index, not DOM order,
           so it can cover the full card without needing to be last. */}
       <span className="fill" aria-hidden="true" />
-      <div className="frame" aria-hidden="true" />
+      {/* <div className="frame" aria-hidden="true" /> */}
+      
       <div className="text">
         <span className="catalogue">{catalogue}</span>
         <h3>{title}</h3>

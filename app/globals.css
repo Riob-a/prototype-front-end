@@ -5,8 +5,6 @@
 }
 
 :root {
-  /* Variable names are historical (from the original brass/oxide museum
-     palette) — --brass and --oxide now hold the crimson accent tones. */
   --wall: #0d0908;
   --wall-soft: #171010;
   --plaster: #f7ece7;
@@ -15,10 +13,11 @@
   --brass-bright: #ff8478;
   --oxide: #6b1616;
   --shadow: #17100f;
-  --hairline: rgba(232, 69, 60, 0.16);
+  --hairline: #e8453c29;
+  --globe-color: var(--brass);
+  --triangle-color: var(--plaster);
 
   --font-display: "Fraunces", serif;
-  /* --font-family:"BBH Bartle", sans-serif; */
   --font-body: "Work Sans", sans-serif;
   --font-mono: "Space Mono", monospace;
 }
@@ -134,6 +133,10 @@ img {
   color: var(--logo-color);
   transition: color 0.4s ease;
 }
+.logo path {
+  transition: fill 0.4s ease;
+}
+.logo-globe { filter: drop-shadow(0 0 32px rgba(232, 69, 60, 0.28)); }
 
 [data-theme="dark"] {
   --logo-color: #e8453c;
@@ -153,12 +156,21 @@ img {
   position: fixed;
   inset: 0;
   z-index: 99999;
+
+  width: 100%;
+  width: 100dvw;
+  height: 100%;
+  height: 100dvh;
+
   background: var(--wall);
   color: var(--plaster);
 
   display: flex;
   align-items: center;
   justify-content: center;
+
+  overflow: hidden;
+  box-sizing: border-box;
 
   transform: translateY(0);
   opacity: 1;
@@ -172,6 +184,8 @@ img {
 
 .loader-progress {
   width: clamp(180px, 25vw, 320px);
+  max-width: 80vw;
+
   height: 1px;
   margin-top: 2rem;
 
@@ -189,6 +203,8 @@ img {
 }
 
 .loader-percentage {
+  width: 100%;
+
   margin-top: 0.65rem;
 
   font-family: var(--font-mono);
@@ -197,7 +213,66 @@ img {
 
   color: var(--plaster-dim);
 
-  align-self: flex-end;
+  text-align: right;
+}
+
+.initial-loader.loader-exiting {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.initial-loader-content {
+  /*
+   * Prevent the loader from ever becoming wider
+   * than the viewport.
+   */
+  width: min(700px, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-sizing: border-box;
+
+  font-family: "BBH Bartle", sans-serif;
+  line-height: 0.85;
+
+  text-align: center;
+}
+
+.initial-loader-content span {
+  display: block;
+
+  background: var(--brass);
+  color: var(--wall);
+
+  padding: 0.12em 0.3em 0.18em;
+
+  font-size: clamp(0.7rem, 1.5vw, 1rem);
+}
+
+.initial-loader-content strong {
+  display: block;
+
+  /*
+   * Scale based on viewport width, but also respect
+   * the actual available width of the loader.
+   */
+  font-size: clamp(2.8rem, 10vw, 7rem);
+
+  font-style: italic;
+  color: var(--brass-bright);
+
+  line-height: 0.85;
+
+  max-width: 100%;
+
+  /*
+   * Prevent CENTER from creating horizontal overflow.
+   */
+  white-space: nowrap;
 }
 
 .initial-loader.loader-exiting {
@@ -225,6 +300,7 @@ img {
   font-style: italic;
   color: var(--brass-bright);
 }
+
 .work-card-link {
   display: block;
   color: inherit;

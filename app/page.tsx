@@ -6,6 +6,7 @@ import AOS from "aos";
 import WingNav from "@/components/WingNav";
 import Placard from "@/components/Placard";
 import DROLogo from "@/components/Logo";
+import DROGlobeLogo from "@/components/DROGlobeLogo";
 import AnimatedLathe from "@/components/Experimental";
 import ContactForm from "@/components/ContactForm";
 
@@ -16,10 +17,10 @@ const Sculpture = dynamic(() => import("@/components/Sculpture"), {
 const WORKS = [
   {
     catalogue: "CAT. 01",
-    title: "Still Life, Late Light",
-    medium: "Graphite on paper",
-    year: "2024",
-    note: "A study of shadow falling across an unfinished table setting.",
+    title: "The Gallery",
+    medium: "JScript",
+    year: "2025",
+    note: "Art Portfolio Page. Still a work in Progress",
     link: "https://derrick-55-ongwae.vercel.app/",
   },
   {
@@ -28,7 +29,7 @@ const WORKS = [
     medium: "Oil on canvas",
     year: "2024",
     note: "Warm underpainting left visible at the edges of the frame.",
-    link: "https://derrick-55-ongwae.vercel.app/",
+    link: "https://portfolio-five-five.vercel.app/",
   },
   {
     catalogue: "CAT. 03",
@@ -226,9 +227,34 @@ export default function Home() {
    * changes the document body's overflow.
    */
   useEffect(() => {
+    const root = document.documentElement;
+
+    /*
+     * Always reserve the browser scrollbar width.
+     *
+     * This prevents the entrance layout from changing width
+     * when the project viewer hides the document scrollbar.
+     */
+    root.style.scrollbarGutter = "stable";
+
     if (!selectedProject) {
       document.body.style.overflow = "";
-      return;
+
+      /*
+       * Give the layout and R3F canvas a chance to recalculate
+       * after the viewer has been removed.
+       */
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event("resize"));
+
+        requestAnimationFrame(() => {
+          window.dispatchEvent(new Event("resize"));
+        });
+      });
+
+      return () => {
+        document.body.style.overflow = "";
+      };
     }
 
     document.body.style.overflow = "hidden";
@@ -285,9 +311,14 @@ export default function Home() {
             <div className="entrance-pin">
               <div className="entrance-copy">
                 <div className="name-logo" data-aos="fade-up">
-                  <DROLogo
+                  {/* <DROLogo
                     className="name-logo-icon"
                     color="var(--logo-color)"
+                    size={42}
+                  /> */}
+                  <DROGlobeLogo
+                    className="logo logo-globe"
+                    globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
                     size={42}
                   />
                   <span className="eyebrow">Derrick Ongwae</span>
@@ -376,11 +407,10 @@ export default function Home() {
 
                 <div className="works-pagination-mobile">
                   <div
-                    className={`mobile-work-card ${
-                      workDirection === 1
+                    className={`mobile-work-card ${workDirection === 1
                         ? "mobile-work-slide-next"
                         : "mobile-work-slide-prev"
-                    }`}
+                      }`}
                     key={currentWork}
                     onPointerDown={handleWorkPointerDown}
                     onPointerUp={handleWorkPointerUp}
@@ -527,7 +557,7 @@ export default function Home() {
                 </span>
 
                 <h2 data-aos="fade-up" data-aos-delay="100">
-                  xperiment
+                  xp-riment
                 </h2>
 
                 {/* <AnimatedLathe/> */}
@@ -543,9 +573,8 @@ export default function Home() {
 
         {selectedProject && (
           <div
-            className={`project-viewer ${
-              viewerClosing ? "project-viewer-closing" : ""
-            }`}
+            className={`project-viewer ${viewerClosing ? "project-viewer-closing" : ""
+              }`}
             role="dialog"
             aria-modal="true"
             aria-label={`${selectedProject.title} project viewer`}
@@ -612,6 +641,9 @@ export default function Home() {
         )}
 
         <style jsx>{`
+         :global(html) {
+            scrollbar-gutter: stable;
+          }
           .gallery {
             margin-left: clamp(3.2rem, 4vw, 7.5rem);
           }
@@ -649,11 +681,13 @@ export default function Home() {
             position: sticky;
             top: 0;
             height: 100svh;
+            min-height: 0;
             display: flex;
             align-items: center;
             gap: clamp(2rem, 5vw, 5rem);
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             padding: clamp(1.5rem, 6vw, 5rem);
+            box-sizing: border-box;
             background: var(--wall);
             overflow: hidden;
           }
@@ -1233,6 +1267,9 @@ export default function Home() {
              ======================================================= */
 
           @media (max-width: 720px) {
+           .entrance-pin {
+              flex-wrap: wrap;
+            }
             .gallery {
               margin-left: 0;
             }
