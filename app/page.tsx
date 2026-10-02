@@ -6,7 +6,8 @@ import AOS from "aos";
 import WingNav from "@/components/WingNav";
 import Placard from "@/components/Placard";
 import DROLogo from "@/components/Logo";
-import AnimatedLathe from "@/components/Experimental"
+import AnimatedLathe from "@/components/Experimental";
+import ContactForm from "@/components/ContactForm";
 import Link from "next/link";
 
 const Sculpture = dynamic(() => import("@/components/Sculpture"), {
@@ -306,7 +307,9 @@ export default function Home() {
                 <h2 data-aos="fade-up" data-aos-delay="100">
                  xperiment
                 </h2>
-                <AnimatedLathe/>
+                {/* <AnimatedLathe/> */}
+                {/* <ContactForm/> */}
+
               </div>
             </div>
           </section>

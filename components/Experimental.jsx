@@ -368,23 +368,20 @@ function AnimatedLathe() {
         }
 
 
-        /* =================================================
-           BASE SCULPTURE RADIUS
-           ================================================= */
+       /* =================================================
+          OPTIMIZED SCULPTURE RADIUS
+          ================================================= */
 
         float sculptRadius(
           float y,
           float originalRadius
         ) {
 
-          float midRadius =
-            (
-              uOuterRadius +
-              uInnerRadius
-            )
-            *
-            0.5;
+          float normalizedY =
+            y / uHeight;
 
+          float midRadius =
+            (uOuterRadius + uInnerRadius) * 0.5;
 
           float isInner =
             step(
@@ -393,140 +390,168 @@ function AnimatedLathe() {
             );
 
 
-          float baseA =
-            formA(y);
+          /* ================================================
+            FORM
+            ================================================ */
 
-          float baseB =
-            formB(y);
+          float formAValue =
+            (
+              1.0
+              +
+              sin(y * 0.85) * 0.35
+              +
+              sin(y * 1.7) * 0.18
+            )
+            *
+            (
+              0.82
+              +
+              sin(normalizedY * 3.14159) * 0.22
+            );
+
+
+          float formBValue =
+            (
+              0.85
+              +
+              sin(y * 1.2) * 0.45
+              +
+              cos(y * 2.4) * 0.15
+            );
+
+
+          float waist =
+            1.0
+            -
+            exp(
+              -pow(
+                (normalizedY - 0.5) * 5.0,
+                2.0
+              )
+            )
+            * 0.3;
+
+
+          formBValue *= waist;
 
 
           float baseForm =
             mix(
-              baseA,
-              baseB,
+              formAValue,
+              formBValue,
               uMorph
             );
 
 
-          float wave1 =
+          /* ================================================
+            PRIMARY WAVE
+            ================================================ */
+
+          float primaryWave =
             sin(
-              y *
-              2.5
-              +
-              uTime *
-              1.5
+              y * 2.5 +
+              uTime * 1.5
             )
-            *
-            0.30;
+            * 0.30;
 
 
-          float wave2 =
+          /* ================================================
+            SECONDARY WAVE
+            ================================================ */
+
+          float secondaryWave =
             sin(
-              y *
-              5.0
-              -
-              uTime *
-              2.0
+              y * 5.0 -
+              uTime * 2.0
             )
-            *
-            0.13;
+            * 0.13;
 
 
-          float wave3 =
+          /* ================================================
+            LONG WAVE
+            ================================================ */
+
+          float longWave =
             cos(
-              y *
-              1.3
-              +
-              uTime *
-              0.8
+              y * 1.3 +
+              uTime * 0.8
             )
-            *
-            0.18;
+            * 0.18;
 
+
+          /* ================================================
+            BREATHING
+            ================================================ */
 
           float breathing =
-            sin(
-              uTime *
-              1.2
-            )
-            *
-            0.12;
+            sin(uTime * 1.2)
+            * 0.12;
 
+
+          /* ================================================
+            PINCH
+            ================================================ */
 
           float pinch =
             sin(
-              y *
-              3.0
-              -
-              uTime *
-              1.8
+              y * 3.0 -
+              uTime * 1.8
             )
-            *
-            0.16;
+            * 0.16;
 
+
+          /* ================================================
+            LIGHTWEIGHT SURFACE NOISE
+            ================================================ */
 
           float n =
-            noise(
-              vec2(
-                y *
-                0.8,
-
-                uTime *
-                0.15
-              )
-            );
-
-
-          n =
-            (
-              n -
-              0.5
+            sin(
+              y * 7.0 +
+              uTime * 0.35
             )
             *
-            0.22;
+            sin(
+              y * 2.17 -
+              uTime * 0.17
+            );
 
+          n *= 0.055;
+
+
+          /* ================================================
+            COMBINE DEFORMATION
+            ================================================ */
 
           float deformation =
             baseForm
             +
-            wave1
-            +
-            wave2
-            +
-            wave3
-            +
-            breathing
-            +
-            pinch
-            +
-            n;
+            primaryWave
+            + secondaryWave
+            + longWave
+            + breathing
+            + pinch
+            + n;
 
 
-          float thicknessWave =
-            sin(
-              y *
-              2.0
-              +
-              uTime *
-              1.1
-            )
-            *
-            0.10;
+          /* ================================================
+            THICKNESS
+            ================================================ */
 
-
-          float dynamicThickness =
+          float thickness =
             0.42
             +
-            thicknessWave;
+            sin(
+              y * 2.0 +
+              uTime * 1.1
+            )
+            * 0.10;
 
 
           float outerRadius =
             deformation;
 
-
           float innerRadius =
-            deformation -
-            dynamicThickness;
+            deformation - thickness;
 
 
           float finalRadius =
@@ -830,6 +855,7 @@ function AnimatedLathe() {
           float y =
             position.y;
 
+float normalizedY = y / uHeight;
 
           float originalRadius =
             length(
@@ -897,35 +923,55 @@ function AnimatedLathe() {
               baseAngle
             );
 
+      vec3 tangentY =
+        positionUp -
+        positionDown;
 
-          vec3 positionAround =
-            getDeformedPosition(
-              y,
-
-              originalRadius,
-
-              baseAngle +
-              epsilonAngle
-            );
-
-
-          vec3 tangentY =
-            positionUp -
-            positionDown;
-
-
-          vec3 tangentAround =
-            positionAround -
-            deformedPosition;
+        /*
+        * Analytical circumferential tangent.
+        *
+        * This avoids another complete call to
+        * getDeformedPosition().
+        */
+        float radius =
+          sculptRadius(
+            y,
+            originalRadius
+          );
 
 
-          vec3 deformedNormal =
-            normalize(
-              cross(
-                tangentAround,
-                tangentY
-              )
-            );
+        float twist =
+          sin(
+            y * 1.15 +
+            uTime * 0.55
+          )
+          *
+          (
+            0.5 +
+            normalizedY * 0.7
+          );
+
+
+        float angle =
+          baseAngle +
+          twist;
+
+
+        vec3 tangentAround =
+          vec3(
+            -sin(angle) * radius,
+            0.0,
+            cos(angle) * radius
+          );
+
+
+        vec3 deformedNormal =
+          normalize(
+            cross(
+              tangentAround,
+              tangentY
+            )
+          );
 
 
           vNormal =
@@ -967,7 +1013,6 @@ function AnimatedLathe() {
         }
 
       `,
-
 
       /* ===================================================
          FRAGMENT SHADER
