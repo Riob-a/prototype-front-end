@@ -1,5 +1,7 @@
 "use client";
 import DROLogo from "./Logo";
+import DROGlobeLogo from "@/components/DROGlobeLogo";
+
 
 const WINGS = [
   { id: "entrance", label: "Entrance" },
@@ -18,6 +20,11 @@ export default function WingNav() {
   return (
     <nav className="wing-nav" aria-label="Gallery wings">
       {/* <DROLogo size={35}/> */}
+      {/* <DROGlobeLogo
+        className="logo logo-globe"
+        globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
+        size={42}
+        /> */}
       <div className="wing-nav-mark"><em>CENTER</em></div>
       <ul>
         {WINGS.map((w, i) => (

@@ -311,17 +311,17 @@ export default function Home() {
             <div className="entrance-pin">
               <div className="entrance-copy">
                 <div className="name-logo" data-aos="fade-up">
-                  {/* <DROLogo
+                  <DROLogo
                     className="name-logo-icon"
                     color="var(--logo-color)"
-                    size={42}
-                  /> */}
-                  <DROGlobeLogo
+                    size={45}
+                  />
+                  {/* <DROGlobeLogo
                     className="logo logo-globe"
                     globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
-                    size={42}
-                  />
-                  <span className="eyebrow">Derrick Ongwae</span>
+                    size={45}
+                  /> */}
+                  <span className="eyebrow">Derrick R Ongwae</span>
                 </div>
 
                 <h1 data-aos="fade-right" data-aos-delay="150">
