@@ -1,3 +1,13 @@
+/**
+ * @param {{
+ *   className?: string,
+ *   size?: number | string,
+ *   color?: string,
+ *   globeColor?: string,
+ *   triangleColor?: string,
+ *   [key: string]: any
+ * }} props
+ */
 export default function DROGlobeLogo({
   className = "",
   size,
