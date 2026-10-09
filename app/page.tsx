@@ -9,6 +9,9 @@ import DROLogo from "@/components/Logo";
 import DROGlobeLogo from "@/components/DROGlobeLogo";
 import AnimatedLathe from "@/components/Experimental";
 import ContactForm from "@/components/ContactForm";
+import { detectDeviceTier } from "@/components/deviceTier";
+import SculptureBoundary from "@/components/SculptureBoundary";
+import SphereFallback from "@/components/SphereFallback";
 
 const Sculpture = dynamic(() => import("@/components/Sculpture"), {
   ssr: false,
@@ -111,6 +114,12 @@ export default function Home() {
    * Used for mobile swipe navigation.
    */
   const touchStartX = useRef<number | null>(null);
+  /*
+ * "pending" = still deciding (nothing mounts, loader stays up)
+ * "on"      = load the 3D sphere
+ * "off"     = show the static fallback instead
+ */
+  const [sphereMode, setSphereMode] = useState<"pending" | "on" | "off">("pending");
 
   const toggleTheme = () => {
     setTheme((prev) => {
@@ -151,6 +160,37 @@ export default function Home() {
       setMounted(true);
     }, 700);
   };
+
+  /*
+ * Decide whether this device gets the sphere.
+ *   ?sphere=on | off          forces it (testing)
+ *   ?tier=low | mid | high    fakes the device tier
+ */
+  useEffect(() => {
+    const forced = new URLSearchParams(window.location.search).get("sphere");
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const low = detectDeviceTier() === "low";
+
+    if (forced === "on") setSphereMode("on");
+    else if (forced === "off" || reduced || low) setSphereMode("off");
+    else setSphereMode("on");
+  }, []);
+
+  /* No sphere means nothing will call onReady, so release the loader ourselves. */
+  useEffect(() => {
+    if (sphereMode === "off") finishLoading();
+  }, [sphereMode]);
+
+  /*
+   * Failsafe: if the sphere still isn't ready after 12 seconds (stalled
+   * download, a shader compile that hangs on a weak GPU), give up on it
+   * and show the fallback so the page can never stay stuck.
+   */
+  useEffect(() => {
+    if (sphereMode !== "on" || mounted) return;
+    const timeout = window.setTimeout(() => setSphereMode("off"), 12000);
+    return () => window.clearTimeout(timeout);
+  }, [sphereMode, mounted]);
 
   /*
    * Open the selected project.
@@ -341,17 +381,29 @@ export default function Home() {
               </div>
 
               <div className="entrance-sculpture">
-                <Sculpture
-                  onNavigate={(id) =>
-                    document
-                      .getElementById(id)
-                      ?.scrollIntoView({ behavior: "smooth" })
-                  }
-                  onToggleTheme={toggleTheme}
-                  theme={theme}
-                  onProgress={updateLoadingProgress}
-                  onReady={finishLoading}
-                />
+                {sphereMode === "on" && (
+                  <SculptureBoundary
+                    fallback={<SphereFallback onToggleTheme={toggleTheme} />}
+                    onError={finishLoading}
+                  >
+                    <Sculpture
+                      onNavigate={(id) =>
+                        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+                      }
+                      onToggleTheme={toggleTheme}
+                      theme={theme}
+                      onProgress={updateLoadingProgress}
+                      onReady={finishLoading}
+                    />
+                  </SculptureBoundary>
+                )}
+
+                {sphereMode === "off" && (
+                  <SphereFallback
+                    onToggleTheme={toggleTheme}
+                    onLoad3D={() => setSphereMode("on")}
+                  />
+                )}
 
                 <span
                   className="plinth-label"
@@ -408,8 +460,8 @@ export default function Home() {
                 <div className="works-pagination-mobile">
                   <div
                     className={`mobile-work-card ${workDirection === 1
-                        ? "mobile-work-slide-next"
-                        : "mobile-work-slide-prev"
+                      ? "mobile-work-slide-next"
+                      : "mobile-work-slide-prev"
                       }`}
                     key={currentWork}
                     onPointerDown={handleWorkPointerDown}

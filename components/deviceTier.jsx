@@ -2,10 +2,46 @@ const debugLog = (...args) => {
   if (process.env.NODE_ENV !== "production") console.log(...args);
 };
 
-let cachedTier = null; // the probe creates a WebGL context, so only run it once
+const TIERS = ["low", "mid", "high"];
+const OVERRIDE_KEY = "deviceTierOverride";
+
+/*
+ * Test switch: open the site with ?tier=low, ?tier=mid or ?tier=high to
+ * pretend to be that kind of device. The choice is remembered for the
+ * current tab (so reloads and in-site navigation keep it) until you open
+ * ?tier=auto. It only changes what the visitor's own device does, so it is
+ * safe to leave enabled, including on deployed preview builds.
+ */
+function getTierOverride() {
+  try {
+    const param = new URLSearchParams(window.location.search).get("tier");
+    if (param === "auto") {
+      sessionStorage.removeItem(OVERRIDE_KEY);
+      return null;
+    }
+    if (TIERS.includes(param)) {
+      sessionStorage.setItem(OVERRIDE_KEY, param);
+      return param;
+    }
+    const stored = sessionStorage.getItem(OVERRIDE_KEY);
+    return TIERS.includes(stored) ? stored : null;
+  } catch (_) {
+    return null; // storage blocked: fall back to real detection
+  }
+}
+
+let cachedTier = null;
 
 export function detectDeviceTier() {
   if (typeof window === "undefined") return "mid";
+
+  // Checked before the cache so changing ?tier= always takes effect.
+  const override = getTierOverride();
+  if (override) {
+    debugLog(`[DeviceTier] tier: ${override} | OVERRIDE (?tier=${override}, ?tier=auto to clear)`);
+    return override;
+  }
+
   if (cachedTier) return cachedTier;
 
   const done = (tier, detail) => {

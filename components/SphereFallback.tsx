@@ -30,7 +30,7 @@ export default function SphereFallback({
           viewBox="24 404 2000 1240"
           globeColor="var(--globe-color)"
           triangleColor="var(--triangle-color)"
-          size={50}
+          // size={50}
         />
       </button>
 
