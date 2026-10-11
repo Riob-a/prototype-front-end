@@ -1,6 +1,7 @@
 "use client";
 
 import DROGlobeLogo from "@/components/DROGlobeLogo";
+import DROGlobeLogoTwo from "@/components/DROGlobeLogo-2";
 
 type SphereFallbackProps = {
   onToggleTheme: () => void;
@@ -25,7 +26,7 @@ export default function SphereFallback({
         aria-label="Switch between light and dark theme"
       >
         {/* Passing viewBox here crops the square canvas to the oval globe. */}
-        <DROGlobeLogo
+        <DROGlobeLogoTwo
           className="logo"
           viewBox="24 404 2000 1240"
           globeColor="var(--globe-color)"

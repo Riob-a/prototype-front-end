@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Work_Sans, Space_Mono, Unbounded } from "next/font/google";
 import DROGlobeLogo from "@/components/DROGlobeLogo";
+import DROGlobeLogoTwo from "@/components/DROGlobeLogo-2";
 import "aos/dist/aos.css";
 import "./globals.css";
 
@@ -86,7 +87,7 @@ export default function RootLayout({
           <div className="initial-loader-content">
             {/* <span>THE</span>
             <strong>CENTER</strong> */}
-            <DROGlobeLogo
+            <DROGlobeLogoTwo
               className="logo logo-globe"
               globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
               size={350}
