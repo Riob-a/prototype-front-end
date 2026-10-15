@@ -17,6 +17,16 @@ const Sculpture = dynamic(() => import("@/components/Sculpture"), {
   ssr: false,
 });
 
+/*
+ * Dynamic imports only download when rendered, so leaving one of these
+ * unused (commented out in the JSX) costs nothing.
+ * NOTE: the folder name has a space ("3D LOGO"). That works if the folder
+ * really exists at that path; a name like "@/components/DROLogo3D" is safer.
+ */
+const DROLogo3D = dynamic(() => import("@/3DLOGO/DROLogo3D"), {
+  ssr: false,
+});
+
 const WORKS = [
   {
     catalogue: "CAT. 01",
@@ -114,12 +124,15 @@ export default function Home() {
    * Used for mobile swipe navigation.
    */
   const touchStartX = useRef<number | null>(null);
+
   /*
- * "pending" = still deciding (nothing mounts, loader stays up)
- * "on"      = load the 3D sphere
- * "off"     = show the static fallback instead
- */
-  const [sphereMode, setSphereMode] = useState<"pending" | "on" | "off">("pending");
+   * "pending" = still deciding (nothing mounts, loader stays up)
+   * "on"      = load the 3D piece (sphere or 3D logo)
+   * "off"     = show the static fallback instead
+   */
+  const [sphereMode, setSphereMode] = useState<"pending" | "on" | "off">(
+    "pending"
+  );
 
   const toggleTheme = () => {
     setTheme((prev) => {
@@ -162,13 +175,15 @@ export default function Home() {
   };
 
   /*
- * Decide whether this device gets the sphere.
- *   ?sphere=on | off          forces it (testing)
- *   ?tier=low | mid | high    fakes the device tier
- */
+   * Decide whether this device gets the 3D piece.
+   *   ?sphere=on | off          forces it (testing)
+   *   ?tier=low | mid | high    fakes the device tier
+   */
   useEffect(() => {
     const forced = new URLSearchParams(window.location.search).get("sphere");
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
     const low = detectDeviceTier() === "low";
 
     if (forced === "on") setSphereMode("on");
@@ -176,13 +191,13 @@ export default function Home() {
     else setSphereMode("on");
   }, []);
 
-  /* No sphere means nothing will call onReady, so release the loader ourselves. */
+  /* No 3D means nothing will call onReady, so release the loader ourselves. */
   useEffect(() => {
     if (sphereMode === "off") finishLoading();
   }, [sphereMode]);
 
   /*
-   * Failsafe: if the sphere still isn't ready after 12 seconds (stalled
+   * Failsafe: if the 3D piece still isn't ready after 12 seconds (stalled
    * download, a shader compile that hangs on a weak GPU), give up on it
    * and show the fallback so the page can never stay stuck.
    */
@@ -381,14 +396,17 @@ export default function Home() {
               </div>
 
               <div className="entrance-sculpture">
-                {sphereMode === "on" && (
+                {/* ===== OPTION A: SPHERE (comment out the blocks below to disable) ===== */}
+                {/* {sphereMode === "on" && (
                   <SculptureBoundary
                     fallback={<SphereFallback onToggleTheme={toggleTheme} />}
                     onError={finishLoading}
                   >
                     <Sculpture
                       onNavigate={(id) =>
-                        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+                        document
+                          .getElementById(id)
+                          ?.scrollIntoView({ behavior: "smooth" })
                       }
                       onToggleTheme={toggleTheme}
                       theme={theme}
@@ -403,7 +421,25 @@ export default function Home() {
                     onToggleTheme={toggleTheme}
                     onLoad3D={() => setSphereMode("on")}
                   />
+                )} */}
+
+                {/* ===== OPTION B: 3D LOGO (currently commented out; remove the wrapper to enable) ===== */}
+                
+                {sphereMode !== "pending" && (
+                  <DROLogo3D
+                    tier={sphereMode === "on" ? "high" : "low"}
+                    autoRotate={sphereMode === "on"}
+                    globeColor="#e8453c"
+                    triangleColor={theme === "dark" ? "#efe6d6" : "#161616"}
+                    onToggleTheme={toggleTheme}
+                    onReady={() => {
+                      updateLoadingProgress(100);
+                      finishLoading();
+                    }}
+                    style={{ flex: 1, minHeight: 0, height: "auto" }}
+                  />
                 )}
+               
 
                 <span
                   className="plinth-label"
@@ -459,10 +495,11 @@ export default function Home() {
 
                 <div className="works-pagination-mobile">
                   <div
-                    className={`mobile-work-card ${workDirection === 1
-                      ? "mobile-work-slide-next"
-                      : "mobile-work-slide-prev"
-                      }`}
+                    className={`mobile-work-card ${
+                      workDirection === 1
+                        ? "mobile-work-slide-next"
+                        : "mobile-work-slide-prev"
+                    }`}
                     key={currentWork}
                     onPointerDown={handleWorkPointerDown}
                     onPointerUp={handleWorkPointerUp}
@@ -493,15 +530,11 @@ export default function Home() {
                       aria-live="polite"
                       aria-atomic="true"
                     >
-                      <span>
-                        {String(currentWork + 1).padStart(2, "0")}
-                      </span>
+                      <span>{String(currentWork + 1).padStart(2, "0")}</span>
 
                       <span className="work-pagination-divider">/</span>
 
-                      <span>
-                        {String(WORKS.length).padStart(2, "0")}
-                      </span>
+                      <span>{String(WORKS.length).padStart(2, "0")}</span>
                     </div>
 
                     <button
@@ -580,11 +613,7 @@ export default function Home() {
                   Visit
                 </h2>
 
-                <p
-                  className="visit"
-                  data-aos="fade-up"
-                  data-aos-delay="200"
-                >
+                <p className="visit" data-aos="fade-up" data-aos-delay="200">
                   For commissions, exhibitions, or a closer look at any piece,
                   reach out directly.
                 </p>
@@ -625,8 +654,9 @@ export default function Home() {
 
         {selectedProject && (
           <div
-            className={`project-viewer ${viewerClosing ? "project-viewer-closing" : ""
-              }`}
+            className={`project-viewer ${
+              viewerClosing ? "project-viewer-closing" : ""
+            }`}
             role="dialog"
             aria-modal="true"
             aria-label={`${selectedProject.title} project viewer`}
@@ -693,7 +723,7 @@ export default function Home() {
         )}
 
         <style jsx>{`
-         :global(html) {
+          :global(html) {
             scrollbar-gutter: stable;
           }
           .gallery {
@@ -887,10 +917,7 @@ export default function Home() {
 
           .works-grid {
             display: grid;
-            grid-template-columns: repeat(
-              auto-fit,
-              minmax(240px, 1fr)
-            );
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.5rem;
           }
 
@@ -923,10 +950,7 @@ export default function Home() {
 
           .rooms-grid {
             display: grid;
-            grid-template-columns: repeat(
-              auto-fit,
-              minmax(220px, 1fr)
-            );
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 2rem;
           }
 
@@ -1106,8 +1130,8 @@ export default function Home() {
               0 40px 120px rgba(0, 0, 0, 0.45),
               0 0 0 1px rgba(255, 255, 255, 0.02);
             overflow: hidden;
-            animation: project-panel-in 0.55s
-              cubic-bezier(0.22, 1, 0.36, 1) both;
+            animation: project-panel-in 0.55s cubic-bezier(0.22, 1, 0.36, 1)
+              both;
           }
 
           .project-viewer-closing .project-viewer-panel {
@@ -1319,7 +1343,7 @@ export default function Home() {
              ======================================================= */
 
           @media (max-width: 720px) {
-           .entrance-pin {
+            .entrance-pin {
               flex-wrap: wrap;
             }
             .gallery {
@@ -1393,16 +1417,16 @@ export default function Home() {
              * Next = enters from right.
              */
             .mobile-work-slide-next {
-              animation: mobile-work-next 0.42s
-                cubic-bezier(0.22, 1, 0.36, 1) both;
+              animation: mobile-work-next 0.42s cubic-bezier(0.22, 1, 0.36, 1)
+                both;
             }
 
             /*
              * Previous = enters from left.
              */
             .mobile-work-slide-prev {
-              animation: mobile-work-prev 0.42s
-                cubic-bezier(0.22, 1, 0.36, 1) both;
+              animation: mobile-work-prev 0.42s cubic-bezier(0.22, 1, 0.36, 1)
+                both;
             }
 
             @keyframes mobile-work-next {
@@ -1523,10 +1547,7 @@ export default function Home() {
 
             .project-viewer-header {
               min-height: 4rem;
-              padding:
-                max(0.65rem, env(safe-area-inset-top))
-                0.8rem
-                0.65rem
+              padding: max(0.65rem, env(safe-area-inset-top)) 0.8rem 0.65rem
                 1rem;
             }
 
@@ -1560,11 +1581,7 @@ export default function Home() {
             }
 
             .project-viewer-footer {
-              padding:
-                0.6rem
-                1rem
-                max(0.6rem, env(safe-area-inset-bottom))
-                1rem;
+              padding: 0.6rem 1rem max(0.6rem, env(safe-area-inset-bottom)) 1rem;
               gap: 1rem;
             }
 
