@@ -87,7 +87,7 @@ export default function RootLayout({
           <div className="initial-loader-content">
             {/* <span>THE</span>
             <strong>CENTER</strong> */}
-            <DROGlobeLogoTwo
+            <DROGlobeLogo
               className="logo logo-globe"
               globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
               size={350}

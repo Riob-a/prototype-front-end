@@ -120,7 +120,7 @@ type ModelProps = {
 
 /** Just the mesh group: drop this inside an existing <Canvas> (e.g. your Sculpture scene). */
 export function DROLogo3DModel({
-  svgUrl = "/dro-logo-clean.svg",
+  svgUrl = "/dro-logo-globe-solid-final.svg",
   depth = 60,
   globeColor = "#e8453c",
   triangleColor = "#161616",
@@ -262,7 +262,7 @@ export default function DROLogo3D({
   autoRotate = true,
   motion = "sway",
   tier = "high",
-  fallbackSrc = "/dro-logo-clean.svg",
+  fallbackSrc = "/dro-logo-globe-solid-final.svg",
   className,
   style,
   ...model
