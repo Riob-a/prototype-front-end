@@ -38,15 +38,21 @@ export default function Placard({
           overflow: hidden;
           border: 1px solid var(--hairline);
           background: var(--shadow);
-          padding: 1.5rem;
+          /* fill the grid cell so cards in a row share one height */
+          height: 100%;
+          padding: clamp(1.1rem, 2vw, 1.5rem);
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          justify-content: flex-start;
+          gap: 0.75rem;
+          text-align: left;
           transition: border-color 0.25s ease, transform 0.25s ease;
         }
-        .placard:hover {
-          border-color: var(--brass);
-          transform: translateY(-3px);
+        @media (hover: hover) {
+          .placard:hover {
+            border-color: var(--brass);
+            transform: translateY(-3px);
+          }
         }
         .fill {
           position: absolute;
@@ -57,13 +63,21 @@ export default function Placard({
           transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 0;
         }
-        .placard:hover .fill {
-          transform: scaleY(1);
+        @media (hover: hover) {
+          .placard:hover .fill {
+            transform: scaleY(1);
+          }
         }
         .frame,
         .text {
           position: relative;
           z-index: 1;
+        }
+        .text {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          flex: 1;
         }
         .frame {
           height: 9rem;
@@ -75,8 +89,10 @@ export default function Placard({
           border: 1px solid var(--hairline);
           transition: opacity 0.3s ease;
         }
-        .placard:hover .frame {
-          opacity: 0;
+        @media (hover: hover) {
+          .placard:hover .frame {
+            opacity: 0;
+          }
         }
         .catalogue {
           font-family: var(--font-mono);
@@ -88,8 +104,10 @@ export default function Placard({
         h3 {
           font-family: var(--font-unbounded);
           font-weight: 500;
-          font-size: 1.3rem;
-          // font-style: italic;
+          font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+          line-height: 1.2;
+          overflow-wrap: anywhere;
+          /* font-style: italic; */
           color: var(--plaster);
           transition: color 0.3s ease;
         }
@@ -110,15 +128,15 @@ export default function Placard({
         /* Once the fill has swept up, the accent background needs dark
            text on top of it rather than the light-on-dark pairing used
            the rest of the time. */
-        .placard:hover .catalogue {
-          color: var(--wall);
-        }
-        .placard:hover h3 {
-          color: var(--wall);
-        }
-        .placard:hover .meta,
-        .placard:hover .note {
-          color: var(--wall-soft);
+        @media (hover: hover) {
+          .placard:hover .catalogue,
+          .placard:hover h3 {
+            color: var(--wall);
+          }
+          .placard:hover .meta,
+          .placard:hover .note {
+            color: var(--wall-soft);
+          }
         }
       `}</style>
     </div>

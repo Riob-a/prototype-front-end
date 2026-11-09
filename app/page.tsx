@@ -12,6 +12,7 @@ import ContactForm from "@/components/ContactForm";
 import { detectDeviceTier } from "@/components/deviceTier";
 import SculptureBoundary from "@/components/SculptureBoundary";
 import SphereFallback from "@/components/SphereFallback";
+import { COPY, WORKS, ROOMS, type Work } from "./content";
 
 const Sculpture = dynamic(() => import("@/components/Sculpture"), {
   ssr: false,
@@ -26,64 +27,6 @@ const Sculpture = dynamic(() => import("@/components/Sculpture"), {
 const DROLogo3D = dynamic(() => import("@/3DLOGO/DROLogo3D"), {
   ssr: false,
 });
-
-const WORKS = [
-  {
-    catalogue: "CAT. 01",
-    title: "The Gallery",
-    medium: "JScript",
-    year: "2025",
-    note: "Art Portfolio Page. Still a work in Progress",
-    link: "https://derrick-55-ongwae.vercel.app/",
-  },
-  {
-    catalogue: "CAT. 02",
-    title: "Interior, Held Breath",
-    medium: "Oil on canvas",
-    year: "2024",
-    note: "Warm underpainting left visible at the edges of the frame.",
-    link: "https://portfolio-five-five.vercel.app/",
-  },
-  {
-    catalogue: "CAT. 03",
-    title: "Study in Reflection",
-    medium: "Digital",
-    year: "2025",
-    note: "Built from layered brush passes rather than flat vector shapes.",
-    link: "https://derrick-55-ongwae.vercel.app/",
-  },
-  {
-    catalogue: "CAT. 04",
-    title: "Fruit, Glass, Dust",
-    medium: "Charcoal and pencil",
-    year: "2023",
-    note: "Returned to twice, a year apart, to correct the light.",
-    link: "https://derrick-55-ongwae.vercel.app/",
-  },
-];
-
-const ROOMS = [
-  {
-    label: "Room A",
-    title: "Pencil",
-    copy: "Line work first — the sketches that decide whether a piece is worth taking further.",
-  },
-  {
-    label: "Room B",
-    title: "Paint",
-    copy: "Oil and acrylic studies built in layers, usually slower than everything else here.",
-  },
-  {
-    label: "Room C",
-    title: "Digital",
-    copy: "Brush-based digital painting alongside the interactive, code-built pieces like the sculpture at the entrance.",
-  },
-  {
-    label: "Room D",
-    title: "Still Life",
-    copy: "Arranged objects, observed directly — the recurring subject across every other medium here.",
-  },
-];
 
 export default function Home() {
   const [theme, setTheme] = useState<"dark" | "light">(() => {
@@ -105,7 +48,7 @@ export default function Home() {
    * null means the viewer is closed.
    */
   const [selectedProject, setSelectedProject] = useState<
-    (typeof WORKS)[number] | null
+    Work | null
   >(null);
 
   /*
@@ -210,7 +153,7 @@ export default function Home() {
   /*
    * Open the selected project.
    */
-  const openProject = (project: (typeof WORKS)[number]) => {
+  const openProject = (project: Work) => {
     setViewerClosing(false);
     setSelectedProject(project);
   };
@@ -369,29 +312,27 @@ export default function Home() {
                   <DROLogo
                     className="name-logo-icon"
                     color="var(--logo-color)"
-                    size={45}
+                    size="clamp(34px, 9vw, 45px)"
                   />
                   {/* <DROGlobeLogo
                     className="logo logo-globe"
                     globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
                     size={45}
                   /> */}
-                  <span className="eyebrow">Derrick R Ongwae</span>
+                  <span className="eyebrow">{COPY.brand}</span>
                 </div>
 
                 <h1 data-aos="fade-right" data-aos-delay="150">
-                  <span className="title-the">THE</span>
-                  <em>center</em>
+                  <span className="title-the">{COPY.titleThe}</span>
+                  <em>{COPY.titleMain}</em>
                 </h1>
 
                 <p
-                  className="eyebrow-"
+                  className="entrance-lede"
                   data-aos="fade-right"
                   data-aos-delay="300"
                 >
-                  One room, four wings. Pencil, paint, digital, and still life —
-                  worked on in whichever order the subject demands. Turn the
-                  piece at the centre; it turns back.
+                  {COPY.lede}
                 </p>
               </div>
 
@@ -446,7 +387,7 @@ export default function Home() {
                   data-aos="fade-up"
                   data-aos-delay="320"
                 >
-                  Fig. 0 — Untitled (Kinetic Study), glass, ongoing
+                  {COPY.plinth}
                 </span>
               </div>
             </div>
@@ -462,11 +403,11 @@ export default function Home() {
             <div className="wing-pin">
               <div className="section-inner">
                 <span className="eyebrow" data-aos="fade-up">
-                  Wing I
+                  {COPY.wing1.eyebrow}
                 </span>
 
                 <h2 data-aos="fade-up" data-aos-delay="100">
-                  Recent works
+                  {COPY.wing1.title}
                 </h2>
 
                 {/* -------------------------------------------------
@@ -555,11 +496,11 @@ export default function Home() {
             <div className="wing-pin">
               <div className="section-inner">
                 <span className="eyebrow" data-aos="fade-up">
-                  Wing II
+                  {COPY.wing2.eyebrow}
                 </span>
 
                 <h2 data-aos="fade-up" data-aos-delay="100">
-                  The four rooms
+                  {COPY.wing2.title}
                 </h2>
 
                 <div className="rooms-grid">
@@ -584,19 +525,15 @@ export default function Home() {
             <div className="wing-pin">
               <div className="section-inner artist">
                 <span className="eyebrow" data-aos="fade-up">
-                  Wing III
+                  {COPY.wing3.eyebrow}
                 </span>
 
                 <h2 data-aos="fade-up" data-aos-delay="100">
-                  About the artist
+                  {COPY.wing3.title}
                 </h2>
 
                 <p data-aos="fade-up" data-aos-delay="200">
-                  Derrick works across pencil, paint, and digital media, most
-                  often returning to still life as a way of re-examining how
-                  light sits on ordinary objects. Outside the studio, he builds
-                  the software this gallery runs on — including the sculpture
-                  you can turn at the entrance.
+                  {COPY.wing3.body}
                 </p>
               </div>
             </div>
@@ -606,25 +543,24 @@ export default function Home() {
             <div className="wing-pin">
               <div className="section-inner">
                 <span className="eyebrow" data-aos="fade-up">
-                  Wing IV
+                  {COPY.wing4.eyebrow}
                 </span>
 
                 <h2 data-aos="fade-up" data-aos-delay="100">
-                  Visit
+                  {COPY.wing4.title}
                 </h2>
 
                 <p className="visit" data-aos="fade-up" data-aos-delay="200">
-                  For commissions, exhibitions, or a closer look at any piece,
-                  reach out directly.
+                  {COPY.wing4.body}
                 </p>
 
                 <a
                   className="visit-link"
-                  href="mailto:hello@derrickongwae.com"
+                  href={`mailto:${COPY.wing4.email}`}
                   data-aos="fade-up"
                   data-aos-delay="300"
                 >
-                  hello@derrickongwae.com
+                  {COPY.wing4.email}
                 </a>
               </div>
             </div>
@@ -634,11 +570,11 @@ export default function Home() {
             <div className="wing-pin">
               <div className="section-inner">
                 <span className="eyebrow" data-aos="fade-up">
-                  Wing V
+                  {COPY.wing5.eyebrow}
                 </span>
 
                 <h2 data-aos="fade-up" data-aos-delay="100">
-                  xp-riment
+                  {COPY.wing5.title}
                 </h2>
 
                 {/* <AnimatedLathe/> */}
@@ -727,7 +663,7 @@ export default function Home() {
             scrollbar-gutter: stable;
           }
           .gallery {
-            margin-left: clamp(3.2rem, 4vw, 7.5rem);
+            margin-left: var(--nav-w);
           }
 
           .site-hidden {
@@ -741,50 +677,56 @@ export default function Home() {
           .name-logo {
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.6rem;
             color: var(--brass);
             transition: color 0.5s ease;
           }
 
           .name-logo-icon {
-            width: 42px;
-            height: 42px;
+            width: clamp(34px, 9vw, 45px);
+            height: clamp(34px, 9vw, 45px);
             flex-shrink: 0;
             color: var(--brass);
           }
 
+          /* =======================================================
+             BASE (COMPACT) LAYOUT
+             Phones, short windows: normal document flow, nothing
+             pinned, so content can never be cut off. Every section
+             uses the same --edge padding, so left edges line up.
+             ======================================================= */
+
           .entrance-wrapper {
             position: relative;
-            min-height: 220vh;
             scroll-snap-align: start;
           }
 
           .entrance-pin {
-            position: sticky;
-            top: 0;
-            height: 100svh;
-            min-height: 0;
+            position: relative;
+            min-height: 100vh;
+            min-height: 100svh;
             display: flex;
-            align-items: center;
-            gap: clamp(2rem, 5vw, 5rem);
-            flex-wrap: nowrap;
-            padding: clamp(1.5rem, 6vw, 5rem);
+            flex-direction: column;
+            justify-content: center;
+            gap: clamp(1.25rem, 4svh, 2.5rem);
+            padding: clamp(1.5rem, 5svh, 3rem) var(--edge);
             box-sizing: border-box;
             background: var(--wall);
             overflow: hidden;
           }
 
           .entrance-copy {
-            flex: 1 1 320px;
+            flex: 0 0 auto;
+            width: 100%;
             max-width: 32rem;
           }
 
           .entrance-copy h1 {
             font-family: "BBH Bartle", sans-serif;
             font-weight: 800;
-            font-size: clamp(2.6rem, 7vw, 4.6rem);
+            font-size: clamp(2.4rem, min(7vw, 11svh), 4.6rem);
             line-height: 1.02;
-            margin: 0.9rem 0 1.4rem;
+            margin: 0.9rem 0 1.2rem;
             color: var(--plaster);
           }
 
@@ -805,21 +747,23 @@ export default function Home() {
           }
 
           .entrance-copy p {
-            font-size: 1.02rem;
+            font-size: clamp(0.95rem, 2.4vw, 1.02rem);
             line-height: 1.65;
             color: var(--plaster-dim);
             max-width: 30rem;
           }
 
           .entrance-sculpture {
-            flex: 1 1 380px;
-            height: min(480px, 60vh);
+            flex: 1 1 auto;
+            min-width: 0;
+            min-height: clamp(220px, 38svh, 420px);
             position: relative;
             display: flex;
             flex-direction: column;
           }
 
           .plinth-label {
+            flex: 0 0 auto;
             margin-top: 0.6rem;
             font-family: var(--font-mono);
             font-size: 0.68rem;
@@ -830,67 +774,24 @@ export default function Home() {
 
           .wing-runway {
             position: relative;
-            min-height: 200vh;
             scroll-snap-align: start;
           }
 
           .wing-pin {
-            position: sticky;
-            top: 0;
+            position: relative;
+            min-height: 100vh;
             min-height: 100svh;
             display: flex;
             align-items: center;
-            padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 6vw, 5rem);
+            padding: var(--section-pad-y) var(--edge);
+            box-sizing: border-box;
             background: var(--wall);
           }
 
           .wing-pin > :global(.section-inner) {
             width: 100%;
-          }
-
-          .wing-i-overlap {
-            margin-top: -10vh;
-            background: transparent;
-            position: relative;
-            z-index: 1;
-          }
-
-          .wing-ii-overlap {
-            margin-top: -10vh;
-            background: transparent;
-            position: relative;
-            z-index: 2;
-          }
-
-          .wing-iii-overlap {
-            margin-top: -10vh;
-            background: transparent;
-            position: relative;
-            z-index: 3;
-          }
-
-          .wing-iv-overlap {
-            margin-top: -10vh;
-            background: transparent;
-            position: relative;
-            z-index: 4;
-          }
-
-          .wing-v-overlap {
-            margin-top: -10vh;
-            background: transparent;
-            position: relative;
-            z-index: 5;
-          }
-
-          #wing-v .wing-pin {
-            padding-top: 3rem;
-            padding-bottom: 3rem;
-          }
-
-          #wing-v .section-inner {
-            width: 100%;
             max-width: none;
+            margin: 0;
           }
 
           :global(.experimental-stage) {
@@ -911,14 +812,93 @@ export default function Home() {
             margin: auto;
           }
 
+          /* Entrance goes side by side on wide or landscape screens. */
+          @media (min-width: 901px),
+            (min-width: 600px) and (orientation: landscape) {
+            .entrance-pin {
+              flex-direction: row;
+              align-items: center;
+              gap: clamp(2rem, 5vw, 5rem);
+            }
+
+            .entrance-copy {
+              flex: 1 1 0;
+              min-width: 0;
+            }
+
+            .entrance-sculpture {
+              flex: 1.2 1 0;
+              min-height: 0;
+              height: min(480px, 60svh);
+            }
+          }
+
+          /* =======================================================
+             PINNED "STACKING ROOMS" LAYOUT
+             Only when the screen is big enough that every wing fits
+             inside one viewport (a pinned block taller than the
+             screen gets its bottom cut off).
+             ======================================================= */
+
+          @media (min-width: 1100px) and (min-height: 600px),
+            (min-width: 721px) and (min-height: 820px) {
+            .entrance-wrapper {
+              min-height: 220vh;
+            }
+
+            .entrance-pin {
+              position: sticky;
+              top: 0;
+              height: 100svh;
+              min-height: 0;
+            }
+
+            .wing-runway {
+              min-height: 200vh;
+              margin-top: -10vh;
+            }
+
+            .wing-pin {
+              position: sticky;
+              top: 0;
+            }
+
+            .wing-i-overlap {
+              z-index: 1;
+            }
+
+            .wing-ii-overlap {
+              z-index: 2;
+            }
+
+            .wing-iii-overlap {
+              z-index: 3;
+            }
+
+            .wing-iv-overlap {
+              z-index: 4;
+            }
+
+            .wing-v-overlap {
+              z-index: 5;
+            }
+          }
+
           /* =======================================================
              DESKTOP WORK GRID
              ======================================================= */
 
           .works-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: clamp(1rem, 2vw, 1.5rem);
+            align-items: stretch;
+          }
+
+          @media (min-width: 1100px) {
+            .works-grid {
+              grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
           }
 
           .works-pagination-mobile {
@@ -935,8 +915,16 @@ export default function Home() {
             font: inherit;
             text-align: left;
             cursor: pointer;
-            display: block;
+            display: flex;
+            flex-direction: column;
             width: 100%;
+            height: 100%;
+          }
+
+          /* let the card inside fill the button so a row of cards
+             shares one height whatever the text length */
+          .work-card-link > :global(*) {
+            flex: 1 1 auto;
           }
 
           .work-card-link:focus-visible {
@@ -950,8 +938,21 @@ export default function Home() {
 
           .rooms-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 2rem;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 1.5rem;
+          }
+
+          @media (min-width: 561px) {
+            .rooms-grid {
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+              gap: 2rem;
+            }
+          }
+
+          @media (min-width: 1100px) {
+            .rooms-grid {
+              grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
           }
 
           .room {
@@ -968,8 +969,9 @@ export default function Home() {
 
           .room h3 {
             font-family: var(--font-unbounded);
-            font-size: 1.5rem;
+            font-size: clamp(1.2rem, 2.4vw, 1.5rem);
             margin: 0.5rem 0 0.7rem;
+            overflow-wrap: anywhere;
           }
 
           .room p {
@@ -994,6 +996,8 @@ export default function Home() {
             color: var(--brass-bright);
             border-bottom: 1px solid var(--brass);
             padding-bottom: 0.2rem;
+            max-width: 100%;
+            overflow-wrap: anywhere;
           }
 
           .visit-link:hover {
@@ -1085,8 +1089,9 @@ export default function Home() {
             font-family: "BBH Bartle", sans-serif;
             font-weight: 400;
             font-style: italic;
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            margin: 0.6rem 0 2.2rem;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            line-height: 1.1;
+            margin: 0.75rem 0 clamp(1.5rem, 3vw, 2.2rem);
           }
 
           /* =======================================================
@@ -1094,6 +1099,7 @@ export default function Home() {
              ======================================================= */
 
           .project-viewer {
+            --viewer-pad: 1.4rem;
             position: fixed;
             inset: 0;
             z-index: 9999;
@@ -1145,7 +1151,7 @@ export default function Home() {
             align-items: center;
             justify-content: space-between;
             gap: 1.5rem;
-            padding: 0.8rem 1.2rem 0.8rem 1.4rem;
+            padding: 0.8rem var(--viewer-pad);
             border-bottom: 1px solid var(--hairline);
             background: var(--wall);
           }
@@ -1217,7 +1223,7 @@ export default function Home() {
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.55rem 1.4rem;
+            padding: 0.55rem var(--viewer-pad);
             border-bottom: 1px solid var(--hairline);
             font-family: var(--font-mono);
             font-size: 0.62rem;
@@ -1255,7 +1261,7 @@ export default function Home() {
             align-items: center;
             justify-content: space-between;
             gap: 1.5rem;
-            padding: 0.7rem 1.4rem;
+            padding: 0.7rem var(--viewer-pad);
             border-top: 1px solid var(--hairline);
             background: var(--wall);
           }
@@ -1343,36 +1349,8 @@ export default function Home() {
              ======================================================= */
 
           @media (max-width: 720px) {
-            .entrance-pin {
-              flex-wrap: wrap;
-            }
             .gallery {
               margin-left: 0;
-            }
-
-            #wing-i {
-              margin-top: 0;
-              position: relative;
-              z-index: 1;
-            }
-
-            /*
-             * Wing I is no longer internally scrollable.
-             * The entire section fits inside the mobile viewport.
-             */
-            #wing-i .wing-pin {
-              position: sticky;
-              top: 0;
-              height: 100svh;
-              min-height: 0;
-              overflow: hidden;
-              box-sizing: border-box;
-              padding: 2rem 1.5rem;
-            }
-
-            #wing-i .section-inner {
-              width: 100%;
-              min-height: 0;
             }
 
             #wing-i h2 {
@@ -1410,7 +1388,8 @@ export default function Home() {
             }
 
             .mobile-work-card .work-card-link {
-              width: min(100%, 360px);
+              width: 100%;
+              height: auto;
             }
 
             /*
@@ -1519,19 +1498,11 @@ export default function Home() {
               color: var(--hairline);
             }
 
-            .wing-ii-overlap {
-              margin-top: 0;
-            }
-
-            .wing-iii-overlap,
-            .wing-iv-overlap {
-              margin-top: -10vh;
-            }
-
             /*
              * Mobile iframe viewer remains full-screen.
              */
             .project-viewer {
+              --viewer-pad: 1rem;
               padding: 0;
               align-items: stretch;
               justify-content: stretch;
@@ -1547,8 +1518,8 @@ export default function Home() {
 
             .project-viewer-header {
               min-height: 4rem;
-              padding: max(0.65rem, env(safe-area-inset-top)) 0.8rem 0.65rem
-                1rem;
+              padding: max(0.65rem, env(safe-area-inset-top)) var(--viewer-pad)
+                0.65rem;
             }
 
             .project-viewer-heading {
@@ -1576,12 +1547,13 @@ export default function Home() {
             }
 
             .project-viewer-meta {
-              padding: 0.5rem 1rem;
+              padding: 0.5rem var(--viewer-pad);
               font-size: 0.56rem;
             }
 
             .project-viewer-footer {
-              padding: 0.6rem 1rem max(0.6rem, env(safe-area-inset-bottom)) 1rem;
+              padding: 0.6rem var(--viewer-pad)
+                max(0.6rem, env(safe-area-inset-bottom));
               gap: 1rem;
             }
 

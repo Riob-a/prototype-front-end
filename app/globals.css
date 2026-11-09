@@ -17,6 +17,16 @@
   --globe-color: var(--brass);
   --triangle-color: var(--plaster);
 
+  /* ---- shared layout tokens: every section reads from these so the
+     left edge, gutters and max width stay identical top to bottom ---- */
+  --nav-w: clamp(3.2rem, 4vw, 7.5rem);
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  --content-max: 1180px;
+  --section-pad-y: clamp(3rem, 8vw, 6rem);
+  /* horizontal padding that centres content to --content-max while never
+     dropping below --gutter (percentages resolve against the element) */
+  --edge: max(var(--gutter), calc((100% - var(--content-max)) / 2));
+
   --font-display: "Fraunces", serif;
   --font-body: "Work Sans", sans-serif;
   --font-mono: "Space Mono", monospace;
@@ -101,19 +111,12 @@ img {
 }
 
 .eyebrow {
+  display: block;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--brass);
-}
-
-.eyebrow-p {
-  font-family: var(--font-mono);
-  /* font-size: 0.72rem; */
-  /* letter-spacing: 0.18em; */
-  /* text-transform: uppercase; */
-  /* color: var(--brass); */
 }
 
 .section {
@@ -124,9 +127,9 @@ img {
 }
 
 .section-inner {
-  max-width: 1180px;
+  width: 100%;
+  max-width: var(--content-max);
   margin: 0 auto;
-  padding-left: clamp(0px, 4vw, 7.5rem);
 }
 
 .logo {
@@ -136,7 +139,7 @@ img {
 .logo path {
   transition: fill 0.4s ease;
 }
-.logo-globe { filter: drop-shadow(0 0 32px rgba(232, 69, 60, 0.28)); }
+.logo-globe { max-width: 100%; filter: drop-shadow(0 0 32px rgba(232, 69, 60, 0.28)); }
 
 [data-theme="dark"] {
   --logo-color: #e8453c;
@@ -144,12 +147,6 @@ img {
 
 [data-theme="light"] {
   --logo-color: #c22b21;
-}
-
-@media (max-width: 720px) {
-  .section-inner {
-    padding-left: 0;
-  }
 }
 
 .initial-loader {
@@ -203,7 +200,9 @@ img {
 }
 
 .loader-percentage {
-  width: 100%;
+  /* same width as the bar so the % sits under its right end */
+  width: clamp(180px, 25vw, 320px);
+  max-width: 80vw;
 
   margin-top: 0.65rem;
 
@@ -260,7 +259,7 @@ img {
    * Scale based on viewport width, but also respect
    * the actual available width of the loader.
    */
-  font-size: clamp(2.8rem, 10vw, 7rem);
+  font-size: clamp(2.4rem, 10vw, 7rem);
 
   font-style: italic;
   color: var(--brass-bright);
@@ -275,39 +274,10 @@ img {
   white-space: nowrap;
 }
 
-.initial-loader.loader-exiting {
-  transform: translateY(-100%);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.initial-loader-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: "BBH Bartle", sans-serif;
-  line-height: 0.85;
-}
-
-.initial-loader-content span {
-  background: var(--brass);
-  color: var(--wall);
-  padding: 0.12em 0.3em 0.18em;
-}
-
-.initial-loader-content strong {
-  font-size: clamp(3rem, 10vw, 7rem);
-  font-style: italic;
-  color: var(--brass-bright);
-}
-
+/* hover lift lives on .placard only (a second lift here doubled it) */
 .work-card-link {
   display: block;
   color: inherit;
   text-decoration: none;
   cursor: pointer;
-}
-
-.work-card-link:hover {
-  transform: translateY(-4px);
 }

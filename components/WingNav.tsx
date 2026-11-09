@@ -1,16 +1,17 @@
 "use client";
-import DROLogo from "./Logo";
-import DROGlobeLogo from "@/components/DROGlobeLogo";
+import { COPY } from "@/app/content";
 
 
-const WINGS = [
-  { id: "entrance", label: "Entrance" },
-  { id: "wing-i", label: "Wing I — Works" },
-  { id: "wing-ii", label: "Wing II — Media" },
-  { id: "wing-iii", label: "Wing III — Artist" },
-  { id: "wing-iv", label: "Wing IV — Visit" },
-  { id: "wing-v", label: "Wing V — Experimental" },
+const WING_IDS = [
+  "entrance",
+  "wing-i",
+  "wing-ii",
+  "wing-iii",
+  "wing-iv",
+  "wing-v",
 ];
+
+const WINGS = WING_IDS.map((id, i) => ({ id, label: COPY.nav[i] }));
 
 export default function WingNav() {
   const scrollTo = (id: string) => {
@@ -19,13 +20,7 @@ export default function WingNav() {
 
   return (
     <nav className="wing-nav" aria-label="Gallery wings">
-      {/* <DROLogo size={35}/> */}
-      {/* <DROGlobeLogo
-        className="logo logo-globe"
-        globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
-        size={42}
-        /> */}
-      <div className="wing-nav-mark"><em>CENTER</em></div>
+      <div className="wing-nav-mark"><em>{COPY.navMark}</em></div>
       <ul>
         {WINGS.map((w, i) => (
           <li key={w.id}>
@@ -45,13 +40,12 @@ export default function WingNav() {
           left: 0;
           top: 0;
           bottom: 0;
-          /* width: clamp(3.2rem, 4vw, 7.5rem); */
-          width: clamp(3.2rem, 4vw, 7.5rem);
+          width: var(--nav-w);
           border-right: 1px solid var(--hairline);
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding: 1.75rem 0;
+          padding: 1.75rem 0 1.25rem;
           z-index: 40;
           background: linear-gradient(
             180deg,
@@ -67,21 +61,25 @@ export default function WingNav() {
           color: var(--brass);
           writing-mode: vertical-rl;
           text-transform: uppercase;
-          margin-bottom: 2.5rem;
+          margin-bottom: 1.5rem;
+          flex-shrink: 0;
+          /* letter-spacing adds trailing space after the last glyph; pull
+             it back so the mark sits optically centred in the rail */
+          padding-block-end: 0.3em;
         }
         ul {
           list-style: none;
           display: flex;
           flex-direction: column;
-          gap: 2.4rem;
+          gap: clamp(1.25rem, 3.5vh, 2.4rem);
           flex: 1;
           min-height: 0;
+          width: 100%;
+          align-items: center;
           justify-content: flex-start;
           overflow-y: auto;
           overflow-x: hidden;
-
-          /* padding: 0.5rem 0.5rem 1.5rem; */
-          padding: 1rem 0.75rem;
+          padding: 0.5rem 0 1rem;
 
           scrollbar-width: thin;
           scrollbar-color: var(--brass) transparent;
@@ -93,9 +91,15 @@ export default function WingNav() {
           background: var(--brass);
           border-radius: 2px;
         }
+        li {
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
         button {
           background: none;
           border: none;
+          padding: 0;
           color: var(--plaster-dim);
           cursor: pointer;
           writing-mode: vertical-rl;

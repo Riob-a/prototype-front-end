@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Work_Sans, Space_Mono, Unbounded } from "next/font/google";
 import DROGlobeLogo from "@/components/DROGlobeLogo";
-import DROGlobeLogoTwo from "@/components/DROGlobeLogo-2";
 import "aos/dist/aos.css";
 import "./globals.css";
 
@@ -36,6 +35,12 @@ export const metadata: Metadata = {
   title: "CENTER — Derrick Ongwae",
   description:
     "A single room, four wings. Pencil, paint, digital, and still life work by Derrick Ongwae.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -90,7 +95,7 @@ export default function RootLayout({
             <DROGlobeLogo
               className="logo logo-globe"
               globeColor="var(--globe-color)" triangleColor="var(--triangle-color)"
-              size={350}
+              size="min(350px, 70vw)"
             />
             <div className="loader-progress">
               <div

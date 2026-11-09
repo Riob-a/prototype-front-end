@@ -138,15 +138,15 @@ function MetallicSphere({
       </mesh>
 
       <mesh renderOrder={10}>
+        <sphereGeometry args={[1.4, 64, 32]} />        
         {/* <icosahedronGeometry args={[1.36, detail]} /> */}
-        <icosahedronGeometry args={[1.36, detail]} />
         <meshBasicMaterial
           transparent
           opacity={0}
           depthWrite={false}
         />
         <Edges
-          threshold={4}
+          threshold={0.5}
           color={theme === "dark" ? "#000000" : "#edebeb"}
           lineWidth={1}
         />
